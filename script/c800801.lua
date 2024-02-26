@@ -47,7 +47,7 @@ end
 -- BANISH ADD:
 
 function s.thfilter(c)
-	return c:IsSetCard(0x3A5) and c:IsSpellTrap()
+	return c:IsSetCard(0x3A5) and c:IsAbleToHand() and not c:IsMonster()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end

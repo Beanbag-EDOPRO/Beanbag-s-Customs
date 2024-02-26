@@ -12,7 +12,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetTargetRange(LOCATION_MZONE,0)
 	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x3A5))
-	e2:SetValue(s.atkval)
+	e2:SetValue(s.value)
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
 	e3:SetCode(EFFECT_UPDATE_DEFENSE)
@@ -47,12 +47,12 @@ end
 
 --UPDATE ATK/DEF:
 
-function s.atkfilter(c)
+function s.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x3A5)
 end
-function s.atkval(e,c)
-	local g=Duel.GetMatchingGroup(s.atkfilter,e:GetHandlerPlayer(),LOCATION_REMOVED,0,nil)
-	return g:GetClassCount(Card.GetCode)*100
+
+function s.value(e,c)
+	return Duel.GetMatchingGroupCount(s.filter,0,LOCATION_REMOVED,0,nil)*100
 end
 
 -- FUSION SUB

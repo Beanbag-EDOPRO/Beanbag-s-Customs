@@ -23,12 +23,11 @@ local e2=Effect.CreateEffect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EVENT_REMOVE)
 	e2:SetCountLimit(1,{id,1})
-	e2:SetTarget(s.btg)
 	e2:SetCost(s.bcost)
 	e2:SetOperation(s.bop)
     c:RegisterEffect(e2)
 local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,2))
+	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetRange(LOCATION_REMOVED)
@@ -83,12 +82,6 @@ function s.bcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(tp,s.bcostfilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
-end
-
-function s.btg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 
 function s.bop(e,tp,eg,ep,ev,re,r,rp)
