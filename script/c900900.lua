@@ -3,6 +3,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 Gemini.AddProcedure(c)
+c:EnableReviveLimit()
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
