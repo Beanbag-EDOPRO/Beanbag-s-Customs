@@ -24,6 +24,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_CHAINING)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCondition(s.negcon,Gemini.EffectStatusCondition)
+	e2:SetCost(s.negcost)
 	e2:SetTarget(s.negtg)
 	e2:SetOperation(s.negop)
 	c:RegisterEffect(e2)
@@ -65,6 +66,12 @@ end
 
 -- GEMINI NEGATE EFFECT
 
+function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.negfilter,tp,LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectMatchingCard(tp,s.negfilter,tp,LOCATION_GRAVE,0,1,1,e:GetHandler())
+ Duel.SendtoDeck(g,nil,2,REASON_COST)
+end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return rp==1-tp and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) and Duel.IsChainNegatable(ev) and s.type_list[tp]&re:GetActiveType()==0
 end
@@ -84,8 +91,4 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
 	Duel.Destroy(eg,REASON_EFFECT) 
 	end
-	if chk==0 then return c:IsAbleToDeckAsCost() and Duel.IsExistingMatchingCard(s.negfilter,tp,LOCATION_GRAVE,0,1,c) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.negfilter,tp,LOCATION_GRAVE,0,1,1,c)
-	Duel.SendtoDeck(g,nil,2,REASON_COST)
 end
