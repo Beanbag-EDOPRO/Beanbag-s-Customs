@@ -85,7 +85,7 @@ function s.bcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.banfilter(c)
-	return c:IsSetCard(0x3A5) and c:IsSpell() or c:IsTrap()
+	return c:IsSetCard(0x3A5) and c:IsSpellTrap()
 end
 
 function s.btg(e,tp,eg,ep,ev,re,r,rp,chk)
