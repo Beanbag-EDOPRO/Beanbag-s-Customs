@@ -49,9 +49,9 @@ function s.sfilter(c)
 end
 function s.scost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_HAND,0,1,c) end
+	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,s.sfilter,tp,LOCATION_HAND,0,1,1,c)
+	local g=Duel.SelectMatchingCard(tp,s.sfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,1,1,c)
 	Duel.SendtoDeck(g,nil,2,REASON_COST)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------
