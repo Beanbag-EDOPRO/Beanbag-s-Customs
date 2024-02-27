@@ -58,7 +58,7 @@ function s.sfilter(c)
 	return c:IsCode(900901) and c:IsAbleToGraveAsCost()
 end
 function s.afilter(c)
-	return c:IsSetCard(0x4D3) and c:IsMonster() and c:IsAbleToHand()
+	return c:IsSetCard(0x4D3) and c:IsType(TYPE_RITUAL) and c:IsAbleToHand()
 end
 function s.stg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.afilter,tp,LOCATION_DECK,0,1,nil) end
