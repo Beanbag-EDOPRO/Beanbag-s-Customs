@@ -47,6 +47,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 	end
 end
+function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return not c:IsSetCard(0x4D3)
+end
 function s.gemfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0x4D3) and c:IsType(TYPE_GEMINI) and not c:IsGeminiStatus()
 end
