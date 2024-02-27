@@ -13,7 +13,7 @@ local e1=Effect.CreateEffect(c)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
 	e3:SetCategory(CATEGORY_DESTROY)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetCondition(s.addcon)
 	e3:SetTarget(s.addtg)
@@ -39,8 +39,8 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.addcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c:IsPreviousLocation(LOCATION_FZONE) and c:IsPreviousPosition(POS_FACEUP)
+	local c=e:GetHandler() 
+	return rp~=tp and e:GetHandler():IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_FZONE) and c:IsPreviousPosition(POS_FACEUP)
 end
 
 function s.filter1(c)
