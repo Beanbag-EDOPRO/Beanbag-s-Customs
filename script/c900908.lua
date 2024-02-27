@@ -46,7 +46,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
 		local sc=g:Select(tp,1,1,nil):GetFirst()
 		if not sc then return end
-		aux.ToHandOrElse(sc,tp,nil,function() Duel.SendToGrave(sc,REASON_EFFECT) end,aux.Stringid(id,3))
+		aux.ToHandOrElse(sc,tp)
 	end
 end
 function s.tkcost(e,tp,eg,ep,ev,re,r,rp,chk)
