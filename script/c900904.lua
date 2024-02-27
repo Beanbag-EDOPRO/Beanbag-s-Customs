@@ -4,9 +4,9 @@ local s,id=GetID()
 function s.initial_effect(c)
 Gemini.AddProcedure(c)
 c:EnableReviveLimit()
---[[	local e4=Effect.CreateEffect(c)
+	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,2))
-	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e4:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOKEN)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetRange(LOCATION_HAND)
 	e4:SetCode(EVENT_FREE_CHAIN)
@@ -16,7 +16,7 @@ c:EnableReviveLimit()
 	e4:SetCost(s.scost)
 	e4:SetTarget(s.stg)
 	e4:SetOperation(s.sop)
-	c:RegisterEffect(e4)]]
+	c:RegisterEffect(e4)
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(aux.Stringid(id,0))
 	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -57,20 +57,21 @@ end
 function s.sfilter(c)
 	return c:IsCode(900901) and c:IsAbleToGraveAsCost()
 end
-function s.afilter(c)
-	return c:IsSetCard(0x4D3) and c:IsMonster() and c:IsAbleToHand()
-end
+
 function s.stg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.afilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	if chk==0 then return not Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,id+16,0,TYPES_TOKEN,0,0,4,RACE_PYRO,ATTRIBUTE_LIGHT) end
+	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,2,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,0)
 end
 function s.sop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.afilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
+	if not Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,id+16,0,TYPES_TOKEN,0,0,4,RACE_PYRO,ATTRIBUTE_LIGHT) then
+		for i=1,2 do
+			local token=Duel.CreateToken(tp,id+16)
+			Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
+		end
+		Duel.SpecialSummonComplete()
 	end
 end
 
