@@ -91,7 +91,7 @@ end
 -- GEMINI EFFECT SPECIAL SUMMON FROM GY TARGET --
 ---------------------------------------------------------------------------------------------------------------------------------------
 function s.gyfilter(c,e,tp)
-	return c:IsSetCard(0x4D3) and c:IsRitualMonster() and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	return c:IsSetCard(0x4D3) and c:IsMonster() and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
 end
 function s.gytg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.spfilter(chkc,e,tp) end
