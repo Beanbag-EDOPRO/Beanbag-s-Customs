@@ -87,7 +87,7 @@ function s.acost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_COST)
 end
 function s.addfilter(c)
-	return c:IsSetCard(0x4D3) and c:IsMonster() and c:IsAbleToDeckAsCost()
+	return c:IsSetCard(0x4D3) and c:IsType(TYPE_RITUAL) and c:IsAbleToDeckAsCost()
 end
 function s.addingfilter(c)
 	return c:IsCode(900901) and c:IsAbleToHand()
