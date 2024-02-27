@@ -52,13 +52,13 @@ end
 
 function s.tkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tkfilter,tp,LOCATION_DECK,0,1,c) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.tkfilter,tp,LOCATION_HAND,0,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,s.tkfilter,tp,LOCATION_DECK,0,1,1,c)
+	local g=Duel.SelectMatchingCard(tp,s.tkfilter,tp,LOCATION_HAND,0,1,1,c)
 	Duel.SendtoGrave(g,REASON_COST)
 end
 function s.tkfilter(c)
-	return c:IsCode(900901) and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(0x4D3) and c:IsRitualMonster() and c:IsAbleToGraveAsCost()
 end
 function s.tktg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanSpecialSummonMonster(tp,id+12,0x4D3,TYPES_TOKEN,0,0,4,RACE_PYRO,ATTRIBUTE_LIGHT) 
@@ -76,8 +76,8 @@ function s.tkop(e,tp,eg,ep,ev,re,r,rp,chk)
 	local fid=c:GetFieldID()
 	local g=Group.CreateGroup()
 	for i=1,ft do
-		local token=Duel.CreateToken(tp,id+1)
-		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP_ATTACK)
+		local token=Duel.CreateToken(tp,id+12)
+		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 		token:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1,fid)
 		g:AddCard(token)
 	end
