@@ -2,140 +2,122 @@
 --Scripted by BeanBag
 local s,id=GetID()
 function s.initial_effect(c)
-Gemini.AddProcedure(c)
-c:EnableReviveLimit()
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,2))
-	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e4:SetType(EFFECT_TYPE_QUICK_O)
-	e4:SetRange(LOCATION_HAND)
-	e4:SetCode(EVENT_FREE_CHAIN)
-	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e4:SetHintTiming(0,TIMING_END_PHASE)
-	e4:SetCountLimit(1,id)
-	e4:SetCost(s.scost)
-	e4:SetTarget(s.stg)
-	e4:SetOperation(s.sop)
-	c:RegisterEffect(e4)
-	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(id,0))
-	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e5:SetType(EFFECT_TYPE_IGNITION)
-	e5:SetRange(LOCATION_MZONE)
-	e5:SetCode(EFFECT_GEMINI_STATUS)
-    e5:SetCondition(Gemini.EffectStatusCondition)
-	e5:SetCost(s.acost)
-	e5:SetTarget(s.atg)
-	e5:SetOperation(s.aop)
-	e5:SetCountLimit(1,{id,1})
-	c:RegisterEffect(e5)
-	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(id,1))
-	e6:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e6:SetType(EFFECT_TYPE_QUICK_O)
-	e6:SetRange(LOCATION_MZONE)
-	e6:SetCode(EVENT_FREE_CHAIN)
-	e6:SetCondition(Gemini.EffectStatusCondition)
-	e6:SetCost(s.spsumcost)
-	e6:SetTarget(s.spsumtg)
-	e6:SetOperation(s.spsumop)
-	e6:SetCountLimit(1,{id,2})
-	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER)
-	c:RegisterEffect(e6)
+	c:EnableReviveLimit()
+	Gemini.AddProcedure(c)
+	--Activate
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetCountLimit(1)
+	e1:SetCondition(s.sumcon)
+	e1:SetTarget(s.sumtg)
+	e1:SetOperation(s.sumop)
+	c:RegisterEffect(e1)
+	aux.GlobalCheck(s,function()
+	    s[0] = true
+	    s[1] = true
+	    local ge1 = Effect.CreateEffect(c)
+	    ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	    ge1:SetCode(EVENT_SUMMON_SUCCESS)
+	    ge1:SetOperation(s.checkop)
+	    Duel.RegisterEffect(ge1,0)
+	    aux.AddValuesReset(function()
+	        s[0] = true
+	        s[1] = true
+	    end)
+	    -- Additional global check for card activation
+		local ge2 = Effect.CreateEffect(c)
+		ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge2:SetCode(EVENT_CHAINING)
+		ge2:SetOperation(s.resetreg)
+		Duel.RegisterEffect(ge2,0)
+	end)
+end
+function s.resetreg(e, tp, eg, ep, ev, re, r, rp)
+    local tc = re:GetHandler()
+    if tc and tc:GetOriginalCode() == 43422537 then
+
+        Duel.ResetFlagEffect(tp,id)
+
+        local resetNeeded = false
+        for i = 0, 1 do
+            if not s[i] then
+                resetNeeded = true
+                break
+            end
+        end
+        -- Reset the tables if needed
+        if resetNeeded then
+            s[0] = true
+            s[1] = true
+        end
+    end
+end
+function s.checkop(e,tp,eg,ep,ev,re,r,rp)
+	s[ep]=false
 end
 
+function s.sumcon(e,tp,eg,ep,ev,re,r,rp)
+	return s[tp]
+end
 
---HAND TRIGGER EFFECT:
-
-function s.scost(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.sumtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_DECK,0,1,c) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,s.sfilter,tp,LOCATION_DECK,0,1,1,c)
-	Duel.SendtoGrave(g,REASON_COST)
-end
-function s.sfilter(c)
-	return c:IsCode(900901) and c:IsAbleToGraveAsCost()
-end
-function s.afilter(c)
-	return c:IsSetCard(0x4D3) and c:IsRitualMonster() and c:IsAbleToHand()
-end
-function s.stg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.afilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-end
-function s.sop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.afilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
-	end
+ 	if c:IsType(TYPE_EFFECT) then return false end
+	if chk==0 then return c:IsFaceup() end
+	Duel.SetChainLimit(aux.FALSE)
 end
 
---GEMINI EFFECT 1:
-
-function s.acon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_GRAVE,0,1,e:GetHandler(),900901)
-end
-
-function s.acost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.addfilter,tp,LOCATION_GRAVE,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.addfilter,tp,LOCATION_GRAVE,0,1,1,e:GetHandler())
-	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_COST)
-end
-function s.addfilter(c)
-	return c:IsSetCard(0x4D3) and c:IsAbleToDeckAsCost()
-end
-function s.addingfilter(c)
-	return c:IsSetCard(0x4D3) and c:IsAbleToHand()
-end
-function s.atg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.addingfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-end
-function s.aop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.addingfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
-	end
-end
-
---SHUFFLE SPECIAL
-
-function s.spfilter(c)
-	return c:IsCode(900901) and c:IsAbleToDeckAsCost()
-end
-
-function s.spsumcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.sumop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsAbleToDeckAsCost() and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,c) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,c)
-	g:AddCard(c)
-	Duel.SendtoDeck(g,nil,2,REASON_COST)
+    if not c then return end
+    --activate
+    local e1=Effect.CreateEffect(e:GetHandler())
+    e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+    e1:SetCode(EVENT_CHAIN_END)
+    e1:SetCountLimit(1)
+    e1:SetLabelObject(c)
+    e1:SetOperation(s.faop)
+    Duel.RegisterEffect(e1,tp)
+    c:RegisterFlagEffect(900900,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD+RESET_PHASE+PHASE_END,0,0)
+end
+function s.faop(e,tp,eg,ep,ev,re,r,rp)
+    local tc=e:GetLabelObject()
+    if not tc then return end
+	local pre={Duel.GetPlayerEffect(tp,EFFECT_CANNOT_SUMMON)}
+	if pre[1] then
+		for i,eff in ipairs(pre) do
+			local prev=eff:GetValue()
+			if type(prev)~='function' or prev(eff) then return end
+		end
+	end
+	if tc:GetFlagEffect(900900)==0 then return false end
+	if tc and tc:IsFaceup() then
+        tc:EnableGeminiStatus()
+        Duel.BreakEffect()
+        Duel.Hint(HINT_CARD,0,id)
+        local e1=Effect.CreateEffect(tc)
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetCode(EFFECT_CANNOT_SUMMON)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
+		e1:SetReset(RESET_PHASE+PHASE_END)
+		e1:SetCondition(s.flagcon)
+		e1:SetTargetRange(1,0)
+		Duel.RegisterEffect(e1,tp)
+		Duel.RegisterFlagEffect(tp,id,RESET_EVENT+RESET_PHASE+PHASE_END,0,1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_CANNOT_MSET)
+		Duel.RegisterEffect(e2,tp)
+        Duel.RaiseEvent(Group.CreateGroup(tc),EVENT_SUMMON,e,0,tp,tp,Duel.GetCurrentChain())
+        tc:ResetFlagEffect(900900)
+    end
+    e:Reset()
 end
 
-function s.spsumfilter(c,e,tp)
-	local pg=aux.GetMustBeMaterialGroup(tp,Group.CreateGroup(),tp,c,nil,REASON_RITUAL)
-	return #pg<=0 and c:IsSetCard(0x4D3) and c:IsRitualMonster() --[[and not c:IsCode(id)]]
-		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,false,POS_FACEUP)
+function s.flagcon(e,c)
+	return Duel.GetFlagEffect(e:GetHandlerPlayer(),id)>0
 end
-function s.spsumtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(s.spsumfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
-end
-function s.spsumop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local tc=Duel.SelectMatchingCard(tp,s.spsumfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp):GetFirst()
-	if tc and Duel.SpecialSummon(tc,SUMMON_TYPE_RITUAL,tp,tp,true,false,POS_FACEUP)>0 then
-		tc:CompleteProcedure()
-	end
-end
+
