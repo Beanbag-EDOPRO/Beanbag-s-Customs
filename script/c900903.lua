@@ -49,10 +49,10 @@ function s.sfilter(c)
 end
 function s.scost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,1,c) end
+	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_DECK,0,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,s.sfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,1,1,c)
-	Duel.SendtoDeck(g,nil,2,REASON_COST)
+	local g=Duel.SelectMatchingCard(tp,s.sfilter,tp,LOCATION_DECK,0,1,1,c)
+	Duel.SendtoGrave(g,REASON_COST)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------
 -- HAND TRIGGER TARGET --
@@ -61,19 +61,19 @@ function s.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0x4D3) and c:IsType(TYPE_GEMINI) and not c:IsGeminiStatus()
 end
 function s.stg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_MZONE,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,1,nil)
+	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) and chkc:IsSpellTrap() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsSpellTrap,tp,0,LOCATION_ONFIELD,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectTarget(tp,Card.IsSpellTrap,tp,0,LOCATION_ONFIELD,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------
 -- HAND TRIGGER OPERATION --
 ---------------------------------------------------------------------------------------------------------------------------------------
 function s.sop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) and s.filter(tc) then
-		tc:EnableGeminiStatus()
-	end
+	if tc:IsRelateToEffect(e) then
+		Duel.Destroy(tc,REASON_EFFECT)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------
 -- GEMINI EFFECT SPECIAL SUMMON FROM GY COST --
