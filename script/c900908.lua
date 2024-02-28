@@ -34,6 +34,13 @@ local e1=Effect.CreateEffect(c)
 	local e4=e3:Clone()
 	e4:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e4)
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_FIELD)
+	e5:SetCode(EFFECT_REMOVE_TYPE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetTargetRange(LOCATION_MZONE)
+	e5:SetValue(TYPE_RITUAL)
+	c:RegisterEffect(e5)
 end
 
 function s.thdesfilter(c)
