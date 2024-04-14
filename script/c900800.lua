@@ -12,6 +12,7 @@ function s.initial_effect(c)
 	e1:SetCost(s.sendcost)
 	e1:SetTarget(s.sendtg)
 	e1:SetOperation(s.sendop)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
@@ -25,10 +26,8 @@ function s.initial_effect(c)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-    Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,function(_c) return _c:IsSetCard(0x3D4) end)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 end
-s.listed_series={0x3D4}
-
 function s.counterfilter(c)
 	return c:IsSetCard(0x3D4)
 end
