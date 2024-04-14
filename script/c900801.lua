@@ -43,7 +43,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetValue(LOCATION_REMOVED)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	Duel.BreakEffect()
+	--[[Duel.BreakEffect()]]
     local g=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_DECK,0,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
