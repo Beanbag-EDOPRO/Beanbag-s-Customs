@@ -49,8 +49,6 @@ function s.sendcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e2:SetReset(RESET_PHASE+PHASE_END)
 	e2:SetTargetRange(1,0)
 	Duel.RegisterEffect(e2,tp)
-	if chk==0 then return e:GetHandler():IsAbleToGraveAsCost() end
-	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
 function s.sendfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsSSetable()
