@@ -53,7 +53,7 @@ function s.sendcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return not c:IsSetCard(0x8)
+	return not c:IsSetCard(0x3D4)
 end
 function s.sendfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsSSetable()
