@@ -31,10 +31,12 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummonStep(c,1,tp,tp,true,false,POS_FACEUP)
 	c:AddMonsterAttributeComplete()
 	Duel.SpecialSummonComplete()
+	Duel.BreakEffect()
     local g=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_DECK,0,nil)
-	Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.BreakEffect()
 		Duel.SSet(tp,sg)
 	end
+end
