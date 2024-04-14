@@ -13,6 +13,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.sendtg)
 	e1:SetOperation(s.sendop)
 	c:RegisterEffect(e1)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -25,9 +26,11 @@ function s.initial_effect(c)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.summonfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 end
-function s.summonfilter(c)
+s.listed_series={0x3D4}
+
+function s.counterfilter(c)
 	return c:IsSetCard(0x3D4)
 end
 --SEND AND SET
@@ -59,7 +62,7 @@ end
 
 --SPECIAL SUMMON
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsActiveType(TYPE_TRAP) and re:IsActiveType(TYPE_CONTINUOUS)
+	return re:IsActiveType(TYPE_TRAP) and re:IsActiveType(TYPE_CONTINUOUS) and re:IsSetCard(0x3D4)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
