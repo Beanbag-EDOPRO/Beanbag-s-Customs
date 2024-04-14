@@ -79,7 +79,7 @@ end
 
 --SPECIAL SUMMON
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsActiveType(TYPE_TRAP) and re:IsActiveType(TYPE_CONTINUOUS) and re:IsSetCard(0x3D4)
+	return rp==tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_TRAP+TYPE_CONTINUOUS) and re:GetHandler():IsSetCard(0x9f) and e:GetHandler()~=re:GetHandler()
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
