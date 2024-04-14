@@ -36,7 +36,7 @@ function s.sendcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
 function s.sendfilter(c)
-	return --[[c:IsSetCard(0x3D4) and]] c:IsContinuousTrap() and c:IsSSetable()
+	return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsSSetable()
 end
 function s.sendtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.sendfilter,tp,LOCATION_DECK,0,1,nil) end
