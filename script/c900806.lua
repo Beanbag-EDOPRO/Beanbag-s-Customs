@@ -50,6 +50,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.HintSelection(sg)
 		Duel.Destroy(sg,REASON_EFFECT)
 end
+end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetAttacker()
