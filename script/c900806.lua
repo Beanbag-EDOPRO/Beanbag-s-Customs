@@ -42,14 +42,14 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.bttldesop)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-    local g=Duel.SelectYesNo(tp,aux.Stringid(id,0))
-    if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-    	local dg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-		local sg=dg:Select(tp,1,1,nil)
-		Duel.HintSelection(sg)
-		Duel.Destroy(sg,REASON_EFFECT)
-end
+    Duel.SelectYesNo(tp,aux.Stringid(id,1))
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectMatchingCard(tp,nil,tp,0,LOCATION_ONFIELD,1,1,nil)
+	if #g>0 then
+		Duel.HintSelection(g,true)
+		Duel.BreakEffect()
+		Duel.Destroy(g,REASON_EFFECT)
+	end
 end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
