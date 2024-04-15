@@ -22,9 +22,6 @@ end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
 end
-function s.rmfilter(c,e)
-	return c:IsAbleToRemove() and aux.SpElimFilter(c) and (not e or c:IsCanBeEffectTarget(e))
-end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
@@ -47,16 +44,15 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	Duel.SelectYesNo(tp,aux.Stringid(id,0))
+		Duel.SelectYesNo(tp,aux.Stringid(id,1))
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectTarget(tp,s.rmfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,LOCATION_MZONE+LOCATION_GRAVE,1,1,nil)
+		local g=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,0,LOCATION_GRAVE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
-	local g=Duel.GetFirstTarget()
-	if g:IsRelateToEffect(e) then
-	Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-    end
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+	end
 end
 
 
