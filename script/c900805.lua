@@ -53,8 +53,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectTarget(tp,s.rmfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,LOCATION_MZONE+LOCATION_GRAVE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
-	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	local g=Duel.GetFirstTarget()
+	if g:IsRelateToEffect(e) then
 	Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
     end
 end
