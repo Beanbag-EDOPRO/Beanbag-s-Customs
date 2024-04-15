@@ -44,15 +44,18 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
 	Duel.BreakEffect()
-    Duel.SelectYesNo(tp,aux.Stringid(id,0))
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,nil,tp,0,LOCATION_MZONE,1,1,nil)
-	if #g>0 then
-		Duel.HintSelection(g,true)
+local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_MZONE,nil,e)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.BreakEffect()
-		Duel.Destroy(g,REASON_EFFECT)
-		if not g then return end
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+		local dg=g:Select(tp,1,1,nil)
+		Duel.HintSelection(dg)
+		Duel.Destroy(dg,REASON_EFFECT)
 	end
+end
+
+function s.filter(c,e)
+	return c:IsMonster() and c:IsDestructable(e)
 end
 
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
