@@ -54,7 +54,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetCode(EFFECT_PIERCE)
 	c:RegisterEffect(e3)
 	Duel.SpecialSummonComplete()
-	Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
+	Duel.SelectYesNo(tp,aux.Stringid(id,2))
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 			local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
