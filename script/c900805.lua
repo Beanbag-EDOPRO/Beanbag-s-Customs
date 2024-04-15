@@ -48,19 +48,15 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetOperation(s.operation)
 	c:RegisterEffect(e3)
 	Duel.SpecialSummonComplete()
-local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_MZONE,nil,e)
-    if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-	Duel.BreakEffect()
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local dg=g:Select(tp,1,1,nil)
-	Duel.HintSelection(dg)
-	Duel.Remove(g,REASON_EFFECT)
-end
+			local g=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,0,LOCATION_GRAVE,nil,tp)
+			if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+			Duel.BreakEffect()
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+			local sg=g:Select(tp,1,1,nil,tp)
+			Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)
+		end
 end
 
-function s.filter(c,e)
-	return c:IsAbleToRemove(e)
-end
 function s.atklimit(e,c)
 	return c==e:GetHandler()
 end
