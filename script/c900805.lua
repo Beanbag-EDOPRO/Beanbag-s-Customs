@@ -59,7 +59,7 @@ end
 end
 
 function s.filter(c,e)
-	return c:IsIsAbleToRemove(e)
+	return c:IsAbleToRemove(e)
 end
 function s.atklimit(e,c)
 	return c==e:GetHandler()
