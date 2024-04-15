@@ -54,7 +54,7 @@ local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_MZONE,nil,e)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local dg=g:Select(tp,1,1,nil)
 	Duel.HintSelection(dg)
-	Duel.Remove(dg,REASON_EFFECT)
+	Duel.Remove(g,REASON_EFFECT)
 end
 end
 
