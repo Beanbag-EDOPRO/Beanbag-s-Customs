@@ -48,7 +48,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetOperation(s.operation)
 	c:RegisterEffect(e3)
 	Duel.SpecialSummonComplete()
-local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_GRAVE,nil,e)
+local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_MZONE,nil,e)
     if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 	Duel.BreakEffect()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
