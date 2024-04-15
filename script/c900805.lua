@@ -47,7 +47,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	Duel.SelectYesNo(tp,aux.Stringid(id,1))
+	Duel.SelectYesNo(tp,aux.Stringid(id,0))
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
@@ -55,7 +55,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
 	local g=Duel.GetFirstTarget()
 	if g:IsRelateToEffect(e) then
-	Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+	Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
     end
 end
 
