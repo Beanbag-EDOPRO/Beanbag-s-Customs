@@ -59,4 +59,5 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.BreakEffect()
 	Duel.Damage(1-tp,1000,REASON_EFFECT)
 end
+end
 
