@@ -54,7 +54,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetCode(EFFECT_PIERCE)
 	c:RegisterEffect(e3)
 	Duel.SpecialSummonComplete()
-	if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+	if Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.BreakEffect()
 	Duel.Damage(1-tp,1000,REASON_EFFECT)
