@@ -47,7 +47,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SelectYesNo(tp,aux.Stringid(id,0))
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+		Duel.Remove(POS_FACEUP,REASON_EFFECT)
 end
 
 
