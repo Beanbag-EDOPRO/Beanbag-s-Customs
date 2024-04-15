@@ -43,6 +43,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.bttldesop)
 	c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
+	Duel.BreakEffect()
     Duel.SelectYesNo(tp,aux.Stringid(id,0))
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 	local g=Duel.SelectMatchingCard(tp,nil,tp,0,LOCATION_MZONE,1,1,nil)
@@ -50,6 +51,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.HintSelection(g,true)
 		Duel.BreakEffect()
 		Duel.Destroy(g,REASON_EFFECT)
+		if not g then return end
 	end
 end
 
