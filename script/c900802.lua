@@ -39,17 +39,18 @@ function s.settofieldfilter(c)
 	return c:IsSSetable() and ((c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_HAND)) or (c:IsLocation(LOCATION_MZONE) and c:IsFaceup()))
 end
 function s.extraop(e,tc,tp,sg)
-	local rg=sg:Filter(aux.NecroValleyFilter(s.settofieldfilter),nil)
-	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end
-	if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
-		local dg=rg:Select(tp,1,1,nil)
-		local tc=rg:GetFirst()
-		Duel.HintSelection(tc)
-		Duel.SSet(tp,tc)
-		Duel.RaiseSingleEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
-		Duel.RaiseEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
-		sg:Sub(tc)
-	end
+    local rg=sg:Filter(aux.NecroValleyFilter(s.settofieldfilter),nil)
+    if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 or Duel.GetFlagEffect(tp,id)>0 then return end
+    if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
+        Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
+        local dg=rg:Select(tp,1,1,nil)
+        local tc=rg:GetFirst()
+        Duel.HintSelection(tc)
+        Duel.SSet(tp,tc)
+        Duel.RaiseSingleEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
+        Duel.RaiseEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
+        sg:Sub(tc)
+    end
 end
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
