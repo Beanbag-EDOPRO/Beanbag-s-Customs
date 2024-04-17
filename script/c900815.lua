@@ -36,7 +36,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_CHAINING)
+	e1:SetCode(EVENT_CHAIN_SOLVING)
 	e1:SetCountLimit(1,{id,2})
 	e1:SetCondition(s.discon)
 	e1:SetOperation(s.disop)
@@ -57,20 +57,20 @@ end
 
 
 
---Disable Resolve
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
-	if rp==tp then return false end
-	local p,loc,seq=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_SEQUENCE)
-	return loc==LOCATION_GRAVE
+    if rp==tp then return false end
+    local p,loc,seq=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_SEQUENCE)
+    local ec=re:GetHandler()
+    return loc==LOCATION_GRAVE or ec:IsLocation(LOCATION_GRAVE)
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFlagEffect(tp,id)>0 then return end
-	local ec=re:GetHandler()
-	Duel.Hint(HINT_CARD,0,id)
-	Duel.RegisterFlagEffect(tp,id,RESET_EVENT+RESET_PHASE+PHASE_END,0,0)
-	if Duel.NegateEffect(ev) then
-		Duel.Remove(ec,POS_FACEDOWN,REASON_EFFECT)
-	end
+    if Duel.GetFlagEffect(tp,id)>0 then return end
+    local ec=re:GetHandler()
+    Duel.Hint(HINT_CARD,0,id)
+    Duel.RegisterFlagEffect(tp,id,RESET_EVENT+RESET_PHASE+PHASE_END,0,0)
+    if Duel.NegateEffect(ev) then
+        Duel.Remove(ec,POS_FACEDOWN,REASON_EFFECT)
+    end
 end
 
 -- To Hand/or Else
