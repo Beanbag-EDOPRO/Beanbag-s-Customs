@@ -76,6 +76,7 @@ function s.faop(e,tp,eg,ep,ev,re,r,rp)
     if tc:GetFlagEffect(id)==0 then return false end
     Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEDOWN,true)
     if te and te:GetCode()==EVENT_FREE_CHAIN and te:IsActivatable(tep) then
+        Duel.BreakEffect()
         Duel.Activate(te)
         Duel.BreakEffect()
         tc:ResetFlagEffect(id)
