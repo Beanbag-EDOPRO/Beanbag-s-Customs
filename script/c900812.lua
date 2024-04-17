@@ -1,88 +1,94 @@
---Poltiquette Fusion
---Scripted by Beanbag - and his slutty mistress
+--Poltiquette Mesmirage
+--Scripted by Aimer
 local s,id=GetID()
 function s.initial_effect(c)
-	Duel.LoadScript('AimersAux.lua')
-	--Activate
-	local fusfilter,matfilter,extrafil,extraop,nosummoncheck,location,extratg=
-	aux.FilterBoolFunction(Card.IsRace,RACE_FIEND),s.matfilter,s.fextra,s.extraop,true,LOCATION_GRAVE|LOCATION_EXTRA,s.extratg,Fusion.ShuffleMaterial
-	--Activate
+	local e0=aux.AddEquipProcedure(c,1,nil,s.eqlimit)
+	e0:SetCountLimit(1,id)
+	--Gain control of the monster while you control a "Poltiquette" Continuos Trap
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(1170)
-	e1:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
-	e1:SetType(EFFECT_TYPE_ACTIVATE)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:GetLabel(100)
-	e1:SetTarget(s.fustg(fusfilter,matfilter,extrafil,extraop,gc,stage2,exactcount,value,location,chkf,preselect,nosummoncheck,mincount,maxcount,sumpos))
-	e1:SetOperation(s.fusop(fusfilter,matfilter,extrafil,extraop,gc,stage2,exactcount,value,location,chkf,preselect,nosummoncheck,mincount,maxcount,sumpos))
+	e1:SetType(EFFECT_TYPE_EQUIP)
+	e1:SetCode(EFFECT_SET_CONTROL)
+	e1:SetValue(function(e) return e:GetHandlerPlayer() end)
+	e1:SetCondition(s.contcond)
 	c:RegisterEffect(e1)
+	--Equipped monsters effects are negated
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,1))
-	e2:SetType(EFFECT_TYPE_IGNITION)
-	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCountLimit(1,id)
-	e2:SetCost(s.setcost)
-	e2:SetTarget(s.settg)
-	e2:SetOperation(s.setop)
+	e2:SetType(EFFECT_TYPE_EQUIP)
+	e2:SetCode(EFFECT_DISABLE)
 	c:RegisterEffect(e2)
-end
-function s.rmfilter(c,tp)
-	return c:IsSetCard(0x3D4) and c:IsSpellTrap() and c:IsAbleToRemoveAsCost()
-end
-function s.setcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_ONFIELD,0,1,e:GetHandler(),tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,s.rmfilter,tp,LOCATION_ONFIELD,0,1,1,e:GetHandler(),tp)
-	Duel.Remove(g,POS_FACEUP,REASON_COST)
-end
-function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToHand() end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,e:GetHandler(),1,0,0)
-end
-function s.setop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		Duel.SendtoHand(c,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,c)
-	end
-end
-function s.matfilter(c)
-	return c:IsAbleToDeck() and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD) and not c:IsCode(id)
-end
-function s.checkmat(tp,sg,fc)
-	return fc:IsSetCard(0x3D4) or not sg:IsExists(Card.IsLocation,1,nil,LOCATION_HAND+LOCATION_GRAVE+LOCATION_ONFIELD+LOCATION_REMOVED)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_EQUIP)
+	e3:SetCode(EFFECT_DISABLE_EFFECT)
+	c:RegisterEffect(e3)
+	--Equipped monster is treated as a "Poltiquette" monster
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_EQUIP)
+	e4:SetCode(EFFECT_ADD_SETCODE)
+	e4:SetValue(0x3D4)
+	c:RegisterEffect(e4)
+	--Banish to Fusion
+	local fusfilter,matfilter,extrafil,extraop,nosummoncheck,location,extratg=
+	aux.FilterBoolFunction(Card.IsSetCard,0x3D4),s.matfilter,s.fextra,s.extraop,true,LOCATION_EXTRA,s.extratg,Fusion.BanishMaterial
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(1170)
+	e5:GetLabel(100)
+	e5:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_GRAVE)
+	e5:SetCountLimit(1,{id,1})
+	e5:SetCost(aux.bfgcost)
+	e5:SetTarget(s.fustg(fusfilter,matfilter,extrafil,extraop,gc,stage2,exactcount,value,location,chkf,preselect,nosummoncheck,mincount,maxcount,sumpos))
+	e5:SetOperation(s.fusop(fusfilter,matfilter,extrafil,extraop,gc,stage2,exactcount,value,location,chkf,preselect,nosummoncheck,mincount,maxcount,sumpos))
+	c:RegisterEffect(e5)
 end
 
-function s.tdcfilter(c)
-	return ((c:IsFaceup() and c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED)) or (c:IsSpellTrap() and c:IsSetCard(0x3D4) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD))) and c:IsAbleToDeck() and not c:IsCode(id)
+function s.eqlimit(e,c)
+	return e:GetHandler():GetEquipTarget()==c or e:GetHandlerPlayer()~=c:GetControler()
+end
+function s.cfilter(c)
+	return c:IsFaceup() and c:IsContinuousTrap() and c:IsSetCard(0x3D4)
+end
+function s.contcond(e)
+	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil)
 end
 
 function s.fextra(e,tp,mg)
 	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
-		return Duel.GetMatchingGroup(aux.NecroValleyFilter(s.tdcfilter),tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil),s.checkmat
+		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)
+	end
+	return nil
+end
+function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,0,tp,LOCATION_ONFIELD+LOCATION_GRAVE)
+end
+
+function s.matfilter(c)
+	return c:IsAbleToRemove() and c:IsLocation(LOCATION_ONFIELD) and not c:IsCode(id)
+end
+function s.checkmat(tp,sg,fc)
+	return fc:IsSetCard(0x3D4) or not sg:IsExists(Card.IsLocation,1,nil,LOCATION_ONFIELD+LOCATION_GRAVE)
+end
+
+function s.tdcfilter(c)
+	return ((c:IsLocation(LOCATION_GRAVE)) or (c:IsSpellTrap() and c:IsSetCard(0x3D4) and c:IsLocation(LOCATION_ONFIELD))) and c:IsAbleToRemove() and not c:IsCode(id)
+end
+
+function s.fextra(e,tp,mg)
+	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
+		return Duel.GetMatchingGroup(aux.NecroValleyFilter(s.tdcfilter),tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil),s.checkmat
 	end
 	return nil,s.checkmat
 end
-function s.settofieldfilter(c)
-	return c:IsSSetable() and ((c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_HAND)) or (c:IsLocation(LOCATION_MZONE) and c:IsFaceup()))
-end
+
 function s.extraop(e,tc,tp,sg)
-    local rg=sg:Filter(aux.NecroValleyFilter(s.settofieldfilter),nil)
-    if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 or Duel.GetFlagEffect(tp,id)>0 then return end
-    if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
-        Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
-        local dg=rg:Select(tp,1,1,nil)
-        local tc=dg:GetFirst()
-        Duel.HintSelection(tc)
-        Duel.SSet(tp,tc)
-        Duel.RaiseSingleEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
-        Duel.RaiseEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
-        sg:Sub(tc)
+    if #sg>0 then
+        Duel.Remove(sg,POS_FACEUP,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
     end
 end
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,0,tp,LOCATION_PUBLIC)
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,0,tp,LOCATION_ONFIELD+LOCATION_GRAVE)
 end
 
 
@@ -189,7 +195,7 @@ function s.fustg(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 					local repl_flag=false
 					-- Check if can be fusion mat "Spell/Trap"
                 	local function spelltrapfilter(c)
-                    	return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeck() and c:IsSetCard(0x3D4))
+                    	return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToRemove() and c:IsSetCard(0x3D4))
                 	end
 					if #efmg>0 then
 						local extra_feff=GetExtraMatEff(efmg:GetFirst())
@@ -318,7 +324,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 				local repl_flag=false
 				-- Check if can be fusion mat "Spell/Trap"
                 local function spelltrapfilter(c)
-                    return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeck() and c:IsSetCard(0x3D4))
+                    return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToRemove() and c:IsSetCard(0x3D4))
                 end
 				if #efmg>0 then
 					local extra_feff=GetExtraMatEff(efmg:GetFirst())
@@ -501,7 +507,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 							if #extra_feff_mg>0 then extra_feff=GetExtraMatEff(extra_feff_mg:GetFirst(),tc) end
 							if #normal_mg>0 then
 								normal_mg=normal_mg:AddMaximumCheck()
-								Duel.SendtoDeck(normal_mg,nil,2,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+								Duel.Remove(normal_mg,POS_FACEUP,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 							end
 							if extra_feff then
 								local extra_feff_op=extra_feff:GetOperation()
@@ -509,7 +515,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 									extra_feff_op(e,tc,tp,extra_feff_mg)
 								else
 									extra_feff_mg=extra_feff_mg:AddMaximumCheck()
-									Duel.SendtoDeck(extra_feff_mg,nil,2,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+									Duel.Remove(extra_feff_mg,POS_FACEUP,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 								end
 								--If the EFFECT_EXTRA_FUSION_MATERIAL effect is OPT
 								--then "use" its count limit.
