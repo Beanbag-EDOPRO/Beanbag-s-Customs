@@ -22,6 +22,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.acop)
 	c:RegisterEffect(e2)
 end
+
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(id,2))
@@ -36,11 +37,12 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function s.accon(e)
-	return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSetCard,SET_POLTIQUETTE),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+	return Duel.IsExistingMatchingCard(Card.IsSetCard,0x3D4,s.fmfilter),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
 function s.fmfilter(c)
-	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION)
+	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION) and c:IsFaceup()
 end
+
 function s.filter(c)
 	return c:IsSetCard(0x3D4) and not c:IsCode(id) and c:IsAbleToHand()
 end
