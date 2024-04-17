@@ -36,7 +36,7 @@ end
 --activate from the hand as new chain
 function s.actfilter(c,e,tp)
     if not c:IsContinuousTrap() then return end
-    return c:IsSetCard(0x3D4) and c:CheckActivateEffect(false,false,false)~=nil and c:IsContinuousTrap()
+    return c:IsSetCard(0x3D4) and c:GetActivateEffect(false,false,false)~=nil and c:IsContinuousTrap()
 end
 
 function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -58,7 +58,6 @@ function s.actop(e,tp,eg,ep,ev,re,r,rp)
     e1:SetOperation(s.faop)
     Duel.RegisterEffect(e1,tp)
     sc:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD+RESET_PHASE+PHASE_END,0,0)
-
 end
 function s.faop(e,tp,eg,ep,ev,re,r,rp)
     local tc=e:GetLabelObject()
