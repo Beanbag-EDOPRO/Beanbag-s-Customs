@@ -33,10 +33,10 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetCondition(s.accon)
 	e1:SetTarget(function(e,c) return c:IsContinuousTrap() and c:IsSetCard(0x3D4) end)
 	e1:SetReset(RESET_PHASE|PHASE_END)
-	Duel.RegisterEffect(e1,tp)
+	Duel.RegisterEffect(e1)
 end
-function s.accon(e)
-	return Duel.IsExistingMatchingCard(s.fmfilter,tp,LOCATION_MZONE,0,1,nil,tp)
+function s.accon(e,c)
+	return Duel.IsExistingMatchingCard(s.fmfilter,e:GetController(),LOCATION_MZONE,0,1,nil)
 end
 function s.fmfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION)
