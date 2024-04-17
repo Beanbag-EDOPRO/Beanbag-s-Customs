@@ -33,6 +33,8 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and Duel.SendtoDeck(tc,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)~=0 then
+	Duel.ShuffleDeck(tp)
+	Duel.BreakEffect()
 	Duel.Draw(tp,1,REASON_EFFECT)
 	end
 end
