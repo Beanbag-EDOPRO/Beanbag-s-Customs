@@ -18,7 +18,7 @@ function s.initial_effect(c)
 end
 
 function s.thfilter(c)
-	return c:IsSpellTrap() and c:IsSetCard(SET_SANGEN) and (c:IsAbleToHand() or c:IsSSetable())
+	return c:IsSpellTrap() and c:IsSetCard(0x3D4) and (c:IsAbleToGrave() or c:IsSSetable())
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
