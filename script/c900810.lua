@@ -37,9 +37,8 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		function(c)
 			Duel.SSet(tp,tc)
 		end,
-		aux.Stringid(id,0)
-	)
-	    and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp)
+		aux.Stringid(id,0))
+	    local g=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp)
 		and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
