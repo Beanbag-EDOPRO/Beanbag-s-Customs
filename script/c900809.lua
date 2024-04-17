@@ -36,6 +36,10 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetReset(RESET_PHASE|PHASE_END)
 	Duel.RegisterEffect(e1,tp)
 end
+function s.accon(e)
+	return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSetCard,0x3D4,IsType(TYPE_FUSION)),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+end
+
 function s.filter(c)
 	return c:IsSetCard(0x3D4) and not c:IsCode(id) and c:IsAbleToHand()
 end
