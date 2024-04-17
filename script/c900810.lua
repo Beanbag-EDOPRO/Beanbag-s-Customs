@@ -33,6 +33,6 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		function(c)
 			Duel.SSet(tp,tc)
 		end,
-		aux.Stringid(id,1)
+		aux.Stringid(id,0)
 	)
 end
