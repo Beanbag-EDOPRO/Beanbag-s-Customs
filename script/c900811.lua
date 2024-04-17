@@ -38,7 +38,7 @@ function s.actcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.actop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
-	local tc=Duel.SelectMatchingCard(tp,s.tffilter,tp,LOCATION_HAND,0,1,1,nil):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,s.actfilter,tp,LOCATION_HAND,0,1,1,nil):GetFirst()
 	local tpe=tc:GetType()
 	local te=tc:GetActivateEffect()
 	local tg=te:GetTarget()
