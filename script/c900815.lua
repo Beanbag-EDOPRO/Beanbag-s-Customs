@@ -98,7 +98,7 @@ end
 
 --Atk/Def Change
 function s.atkfilter(c)
-	return c:IsAttackAbove(1000) and c:IsDefenseAbove(1000) and c:IsFaceup() --[[and c:IsType(RACE_FIEND) and c:IsType(TYPE_FUSION)--]]
+	return c:IsAttackAbove(1000) and c:IsDefenseAbove(1000) and c:IsFaceup() and c:IsType(RACE_FIEND) and c:IsType(TYPE_FUSION)
 end
 
 function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
