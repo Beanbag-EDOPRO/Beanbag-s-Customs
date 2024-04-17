@@ -38,13 +38,13 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.SSet(tp,tc)
 		end,
 		aux.Stringid(id,0))
-	    local g=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
-		and Duel.SelectYesNo(tp,aux.Stringid(id,1))
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-		if #g>0 then
-		Duel.BreakEffect()
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
-		Duel.ConfirmCards(1-tp,g)
-end
-end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+		local g=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_GRAVE,0,nil,e,tp)
+		if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
+			Duel.BreakEffect()
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+			local sg=g:Select(tp,1,1,nil)
+			Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
+		end
+	end
+
