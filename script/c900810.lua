@@ -18,7 +18,7 @@ function s.initial_effect(c)
 end
 
 function s.thfilter(c)
-	return c:IsSpellTrap() and c:IsSetCard(0x3D4) and (c:IsAbleToGrave() or c:IsSSetable())
+	return c:IsSpellTrap() and c:IsSetCard(0x3D4) and (c:IsAbleToGrave() or c:IsSSetable() and not c:IsCode(id))
 end
 function s.spfilter(c,e,tp)
 	return c:IsRace(RACE_FIEND) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
@@ -38,10 +38,10 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.SSet(tp,tc)
 		end,
 		aux.Stringid(id,0))
-	    local g=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp)
+	    local g=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
 		and Duel.SelectYesNo(tp,aux.Stringid(id,1))
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+		local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
 		if #g==0 then end
 		Duel.BreakEffect()
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
