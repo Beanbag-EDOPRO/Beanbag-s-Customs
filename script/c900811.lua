@@ -36,7 +36,7 @@ end
 --activate from the hand as new chain
 function s.actfilter(c,e,tp)
     if not c:IsContinuousTrap() then return end
-    return c:IsSetCard(0x3D4) and c:GetActivateEffect(false,false,false)~=nil and c:IsContinuousTrap()
+    return c:IsSetCard(0x3D4) and c:CheckActivateEffect(false,false,false)~=nil and c:IsContinuousTrap()
 end
 
 function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk)
