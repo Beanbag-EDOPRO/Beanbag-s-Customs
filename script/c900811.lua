@@ -59,6 +59,7 @@ function s.actop(e,tp,eg,ep,ev,re,r,rp)
     Duel.RegisterEffect(e1,tp)
     sc:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD+RESET_PHASE+PHASE_END,0,0)
 end
+
 function s.faop(e,tp,eg,ep,ev,re,r,rp)
     local tc=e:GetLabelObject()
     if not tc then return end
@@ -73,6 +74,7 @@ function s.faop(e,tp,eg,ep,ev,re,r,rp)
         end
     end
     if tc:GetFlagEffect(id)==0 then return false end
+    Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEDOWN,true)
     if te and te:GetCode()==EVENT_FREE_CHAIN and te:IsActivatable(tep) then
         Duel.Activate(te)
         Duel.BreakEffect()
