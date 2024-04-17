@@ -12,27 +12,27 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
     e2:SetRange(LOCATION_FZONE)
 	e2:SetCountLimit(1,id)
-	e2:SetTarget(s.tgtg)
-	e2:SetOperation(s.tgop)
+	e2:SetTarget(s.thtg)
+	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
 end
 
-function s.tgfilter(c)
-	return c:IsSetCard(0x3D4) and c:IsSpellTrap() and (c:IsAbleToGrave() or c:IsSSetable())
+function s.thfilter(c)
+	return c:IsSpellTrap() and c:IsSetCard(SET_SANGEN) and (c:IsAbleToHand() or c:IsSSetable())
 end
-function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil) end
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
 end
-function s.tgop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
-	local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil)
-	if #g>0 then
-		local tc=g:GetFirst()
-		if tc and tc:IsAbleToGrave() and (not tc:IsSSetable() or Duel.SelectYesNo(tp,aux.Stringid(id,0))) then
-			Duel.SendtoGrave(tc,REASON_EFFECT)
-		else
-			Duel.SSet(tc,g)
-		end
-	end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
+	local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil):GetFirst()
+	if not tc then return end
+	aux.ToHandOrElse(tc,tp,
+		Card.IsSSetable,
+		function(c)
+			Duel.SSet(tp,tc)
+		end,
+		aux.Stringid(id,3)
+	)
 end
