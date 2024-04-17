@@ -72,7 +72,7 @@ function s.extraop(e,tc,tp,sg)
     if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
         Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
         local dg=rg:Select(tp,1,1,nil)
-        local tc=rg:GetFirst()
+        local tc=dg:GetFirst()
         Duel.HintSelection(tc)
         Duel.SSet(tp,tc)
         Duel.RaiseSingleEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
