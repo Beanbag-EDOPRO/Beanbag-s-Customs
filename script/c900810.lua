@@ -47,3 +47,4 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 		Duel.ConfirmCards(1-tp,g)
 end
+end
