@@ -32,7 +32,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 		if tc and tc:IsAbleToGrave() and (not tc:IsSSetable() or Duel.SelectYesNo(tp,aux.Stringid(id,0))) then
 			Duel.SendtoGrave(tc,REASON_EFFECT)
 		else
-			Duel.SSet(tc,tp,REASON_EFFECT)
+			Duel.SSet(tc,g)
 		end
 	end
 end
