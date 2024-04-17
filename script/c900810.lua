@@ -25,14 +25,14 @@ function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
 end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
 	local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil)
 	if #g>0 then
 		local tc=g:GetFirst()
 		if tc and tc:IsAbleToGrave() and (not tc:IsSSetable() or Duel.SelectYesNo(tp,aux.Stringid(id,0))) then
 			Duel.SendtoGrave(tc,REASON_EFFECT)
 		else
-			Duel.SSet(tc,REASON_EFFECT)
+			Duel.SSet(REASON_EFFECT)
 		end
 	end
 end
