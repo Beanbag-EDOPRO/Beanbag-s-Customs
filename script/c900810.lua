@@ -20,9 +20,13 @@ end
 function s.thfilter(c)
 	return c:IsSpellTrap() and c:IsSetCard(0x3D4) and (c:IsAbleToGrave() or c:IsSSetable())
 end
+function s.spfilter(c,e,tp)
+	return c:IsRace(RACE_FIEND) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
@@ -35,4 +39,12 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		end,
 		aux.Stringid(id,0)
 	)
+	    Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp)
+		and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+		if #g==0 then return end
+		Duel.BreakEffect()
+		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		Duel.ConfirmCards(1-tp,g)
 end
