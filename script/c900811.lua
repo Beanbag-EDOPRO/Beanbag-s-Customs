@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.tdfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x3D4) and c:IsSpellTrap()
+	return c:IsFaceup() and c:IsSetCard(0x3D4) and c:IsSpellTrap() and not c:IsCode(id)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and s.tdfilter(chkc) end
