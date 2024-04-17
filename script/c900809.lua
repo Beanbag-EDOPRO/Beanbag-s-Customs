@@ -37,7 +37,7 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function s.accon(e)
-	return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSetCard,0x3D4,s.fmfilter),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+	return Duel.IsExistingMatchingCard(Card.IsSetCard,0x3D4,s.fmfilter),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
 function s.fmfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION)
