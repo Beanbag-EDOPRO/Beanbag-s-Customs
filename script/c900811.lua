@@ -43,7 +43,7 @@ function s.acttg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0 and Duel.IsExistingMatchingCard(s.actfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
 end
 
-function s.acop(e,tp,eg,ep,ev,re,r,rp)
+function s.actop(e,tp,eg,ep,ev,re,r,rp)
     local g=Duel.GetMatchingGroup(s.actfilter,tp,LOCATION_HAND,0,nil,e,tp)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
     local sc=g:Select(tp,1,1,nil):GetFirst()
