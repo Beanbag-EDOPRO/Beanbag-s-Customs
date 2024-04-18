@@ -68,7 +68,7 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
     Duel.NegateActivation(ev)
-    if Duel.GetLocationCount(tp,LOCATION_ONFIELD,LOCATION_ONFIELD) then return end
+    if Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD) then return end
     local g=Duel.GetMatchingGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD,0,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
