@@ -31,6 +31,14 @@ function s.initial_effect(c)
 	e3:SetTarget(s.indes)
 	e3:SetValue(s.unval)
 	c:RegisterEffect(e3)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetTargetRange(LOCATION_HAND,0)
+	e4:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x3D4))
+	c:RegisterEffect(e4)
 end
 
 function s.matfilter(c,fc,sumtype,tp)
@@ -66,9 +74,9 @@ end
 
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(s.negcostfilter,tp,LOCATION_ONFIELD,0,1,c) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.negcostfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.negcostfilter,tp,LOCATION_ONFIELD,0,1,1,c)
+	local g=Duel.SelectMatchingCard(tp,s.negcostfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,1,1,c)
 	Duel.HintSelection(g)
 	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_COST)
 end
