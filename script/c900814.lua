@@ -67,5 +67,15 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetPossibleOperationInfo(0,CATEGORY_REMOVE,nil,1,PLAYER_ALL,LOCATION_ONFIELD)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-Duel.NegateActivation(ev)
+    if Duel.NegateActivation(ev) then
+	Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
+	Duel.SelectYesNo(tp,aux.Stringid(id,0))
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local dg=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	if #dg>0 then
+		Duel.HintSelection(dg,true)
+		Duel.BreakEffect()
+		Duel.Remove(dg,POS_FACEDOWN,REASON_EFFECT)
+	end
+end
 end
