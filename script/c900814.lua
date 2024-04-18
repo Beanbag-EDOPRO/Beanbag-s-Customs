@@ -65,12 +65,15 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
 end
-function s.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.negop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateActivation(ev) then
-		Duel.GetFieldGroupCount(1-tp,LOCATION_ONFIELD,0)>0
-		and Duel.SelectYesNo(tp,aux.Stringid(id,0))
-		local g=Duel.GetFieldGroup(1-tp,LOCATION_ONFIELD,0)
-		Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
+    if Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil)
+			and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+			Duel.BreakEffect()
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+			local g=Duel.SelectMatchingCard(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+			Duel.HintSelection(g)
+			Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
+		end
 	end
-
-
+end
