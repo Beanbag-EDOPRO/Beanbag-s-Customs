@@ -79,3 +79,4 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Remove(dg,POS_FACEDOWN,REASON_EFFECT)
 	end
 end
+end
