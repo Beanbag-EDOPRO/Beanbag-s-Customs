@@ -67,7 +67,7 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateActivation(ev) then
-		Duel.GetFieldGroupCount(1-tp,LOCATION_ONFIELD,0)>0
+		Duel.GetFieldGroupCount(1-tp,LOCATION_ONFIELD,0)
 		and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		local g=Duel.GetFieldGroup(1-tp,LOCATION_ONFIELD,0)
 		Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
