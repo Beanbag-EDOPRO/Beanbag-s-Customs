@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--fusion material
-	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(s.matfilter),3,99)
+	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(s.matfilter),3)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
