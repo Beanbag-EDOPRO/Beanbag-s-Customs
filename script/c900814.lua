@@ -61,8 +61,9 @@ end
 
 
 function s.negcostfilter(c,tp)
-	return c:IsSetCard(0x3D4)) and c:IsContinuousTrap() and c:IsAbleToDeckAsCost()
+	return c:IsSetCard(0x3D4) and c:IsTrap() and c:IsType(TYPE_CONTINUOUS) and c:IsAbleToDeckAsCost()
 end
+
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return Duel.IsExistingMatchingCard(s.negcostfilter,tp,LOCATION_ONFIELD,0,1,c) end
@@ -71,6 +72,7 @@ function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.HintSelection(g)
 	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_COST)
 end
+
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return rp==1-tp and Duel.IsChainNegatable(ev) and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)
 end
