@@ -68,13 +68,12 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
     Duel.NegateActivation(ev)
-	local g=Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
-		and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0))
+    if Duel.GetLocationCount(tp,LOCATION_ONFIELD)<=0 then return end
+    local g=Duel.GetMatchingGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD,0,nil)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-		local dg=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
-		if #dg>0 then
-		Duel.HintSelection(dg,true)
+		local sg=g:Select(tp,1,1,nil)
 		Duel.BreakEffect()
-		Duel.Remove(dg,POS_FACEDOWN,REASON_EFFECT)
+		Duel.Remove(sg,POS_FACEDOWN,REASON_EFFECT)
 	end
 end
