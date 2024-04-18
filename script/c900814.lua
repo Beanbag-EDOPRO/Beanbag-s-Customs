@@ -64,19 +64,12 @@ end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	Duel.SetPossibleOperationInfo(0,CATEGORY_REMOVE,nil,1,PLAYER_ALL,LOCATION_ONFIELD)
 end
-function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.NegateActivation(ev) then return end
-	local c=e:GetHandler()
-	local g=Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
-		and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0))
-		Duel.BreakEffect()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-		local dg=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
-		if #dg>0 then
-			Duel.HintSelection(dg,true)
-			Duel.BreakEffect()
-		Duel.Destroy(dg,REASON_EFFECT)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.NegateActivation(ev) and Duel.GetFieldGroupCount(1-tp,LOCATION_ONFIELD,0)>0
+		and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+		local g=Duel.GetFieldGroup(1-tp,LOCATION_ONFIELD,0)
+		Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
 	end
 end
+
