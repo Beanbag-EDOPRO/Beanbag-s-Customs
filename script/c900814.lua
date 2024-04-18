@@ -67,13 +67,16 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetPossibleOperationInfo(0,CATEGORY_REMOVE,nil,1,PLAYER_ALL,LOCATION_ONFIELD)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.NegateActivation(ev)
-    Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
-    local g=Duel.GetMatchingGroup(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
-	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then return end
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-		local sg=g:Select(tp,1,1,nil)
+	if not Duel.NegateActivation(ev) then return end
+	local c=e:GetHandler()
+	local g=Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
+		and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,3)) then
 		Duel.BreakEffect()
-		Duel.Remove(sg,POS_FACEDOWN,REASON_EFFECT)
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+		local dg=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+		if #dg>0 then
+			Duel.HintSelection(dg,true)
+			Duel.BreakEffect()
+		Duel.Destroy(dg,REASON_EFFECT)
+	end
 end
-
