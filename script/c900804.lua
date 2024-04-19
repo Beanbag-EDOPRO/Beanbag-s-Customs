@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.cfilter(c,tp)
-	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION) and c:IsControler(tp)
+	return c:IsSetCard(0x3D4) and c:IsType(TYPE_FUSION|TYPE_LINK) and c:IsControler(tp)
 end
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
