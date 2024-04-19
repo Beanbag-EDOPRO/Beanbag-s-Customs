@@ -60,11 +60,11 @@ function s.sendfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsSSetable()
 end
 function s.sendtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.sendfilter,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.sendfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil) end
 end
 function s.sendop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
-	local tc=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.sendfilter),tp,LOCATION_DECK,0,1,1,nil):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.sendfilter),tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil):GetFirst()
 	if tc and tc:IsSSetable() and Duel.SSet(tp,tc)>0 then
 		--Can be activated this turn
 		local e1=Effect.CreateEffect(e:GetHandler())
@@ -76,6 +76,7 @@ function s.sendop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 		Duel.Draw(tp,1,REASON_EFFECT)
+		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
 end
 
 --SPECIAL SUMMON
@@ -91,5 +92,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
 	end
 end
