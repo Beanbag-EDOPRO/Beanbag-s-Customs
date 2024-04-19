@@ -21,7 +21,7 @@ function s.matfilter(c,fc,sumtype,tp)
 	return c:IsSpellTrap(fc,sumtype,tp) and c:IsSetCard(0x3D4,fc,sumtype,tp)
 end
 function s.setfilter(c)
-	return c:IsSetCard(0x3D4) and c:IsSpellTrap() and c:IsType(TYPE_CONTINUOUS) and c:IsSSetable()
+	return c:IsSetCard(0x3D4) and c:IsTrap() and c:IsType(TYPE_CONTINUOUS) and c:IsSSetable()
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>=2
