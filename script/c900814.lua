@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--fusion material
-	Fusion.AddProcMixRep(c,true,true,s.matfilter,3,99)
+	Fusion.AddProcMixRep(c,true,true,s.matfilter,4,99)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -48,11 +48,11 @@ end
 function s.sucop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsSummonType(SUMMON_TYPE_FUSION) then return end
-	--Its original ATK/DEF become the number of Fusion Materials x 1000
+	--Its original ATK/DEF become the number of Fusion Materials x 500
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_SET_BASE_ATTACK)
-	e1:SetValue(c:GetMaterialCount()*1000)
+	e1:SetValue(c:GetMaterialCount()*500)
 	e1:SetReset(RESET_EVENT|RESETS_STANDARD_DISABLE)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
