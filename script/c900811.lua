@@ -25,6 +25,16 @@ function s.initial_effect(c)
     e3:SetTarget(s.acttg)
     e3:SetOperation(s.actop)
     c:RegisterEffect(e3)
+    local e4=Effect.CreateEffect(c)
+    e4:SetDescription(aux.Stringid(id,1))
+    e4:SetType(EFFECT_TYPE_IGNITION)
+    e4:SetCode(EVENT_FREE_CHAIN)
+    e4:SetRange(LOCATION_GRAVE)
+    e4:SetCountLimit(1,{id,2})
+    e4:SetCost(aux.bfgcost)
+    e4:SetTarget(s.atg)
+    e4:SetOperation(s.aop)
+    c:RegisterEffect(e4)
 end
 
 function s.actcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -103,5 +113,20 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
     Duel.ShuffleDeck(tp)
     Duel.BreakEffect()
     Duel.Draw(tp,1,REASON_EFFECT)
+    end
+end
+function s.afilter(c)
+    return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsFaceup() and c:IsAbleToHand()
+end
+function s.atg(e,tp,eg,ep,ev,re,r,rp,chk)
+    if chk==0 then return Duel.IsExistingMatchingCard(s.afilter,tp,LOCATION_REMOVED+LOCATION_GRAVE,0,1,nil) end
+    Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_REMOVED+LOCATION_GRAVE)
+end
+function s.aop(e,tp,eg,ep,ev,re,r,rp)
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+    local g=Duel.SelectMatchingCard(tp,s.afilter,tp,LOCATION_REMOVED+LOCATION_GRAVE,0,1,1,nil)
+    if #g>0 then
+        Duel.SendtoHand(g,nil,REASON_EFFECT)
+        Duel.ConfirmCards(1-tp,g)
     end
 end
