@@ -82,7 +82,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
     e1:SetTarget(s.splimit)
     e1:SetReset(RESET_PHASE+PHASE_END)
     Duel.RegisterEffect(e1,tp)
-    Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
+    Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
 end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
     return not c:IsSetCard(0x3D4)
