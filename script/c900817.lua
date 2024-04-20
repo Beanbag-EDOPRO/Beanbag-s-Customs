@@ -31,7 +31,7 @@ function s.matfilter(c)
 end
 function s.valcheck(e,c)
 	local g=c:GetMaterial()
-	if g:IsExists(Card.IsSetCard,1,nil,0x3D4,s.matfilter) then
+	if g:IsExists(s.matfilter,1,nil) then
 		local reset=RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD+RESET_PHASE+PHASE_END
 		c:RegisterFlagEffect(id,reset,0,1)
 	end
