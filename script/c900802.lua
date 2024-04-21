@@ -58,13 +58,26 @@ function s.tdcfilter(c)
 end
 
 function s.fextra(e,tp,mg)
-	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
-		return Duel.GetMatchingGroup(aux.NecroValleyFilter(s.tdcfilter),tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil),s.checkmat
-	end
-	return nil,s.checkmat
+    if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
+        local mg=Duel.GetMatchingGroup(aux.NecroValleyFilter(s.tdcfilter),tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
+        -- Iterate through monster zone
+	    if Duel.IsPlayerAffectedByEffect(tp,900817) then
+	        for i=0,6 do
+	            local check=Duel.GetFieldCard(tp,LOCATION_MZONE,i)
+	            if check and check:IsType(TYPE_XYZ) and check:IsCode(900817) then
+	                -- If the monster with specific ID exists, add its overlay group to mg
+	                local og=check:GetOverlayGroup()
+	                mg:Merge(og)
+	            end
+	        end
+	    end
+        return mg,s.checkmat
+    end
+    return nil,s.checkmat
 end
+
 function s.settofieldfilter(c)
-	return c:IsSSetable() and ((c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_HAND)) or (c:IsLocation(LOCATION_MZONE) and c:IsFaceup()))
+	return c:IsSSetable() and ((c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED+LOCATION_HAND+LOCATION_OVERLAY)) or (c:IsLocation(LOCATION_MZONE) and c:IsFaceup()))
 end
 function s.extraop(e,tc,tp,sg)
     local rg=sg:Filter(aux.NecroValleyFilter(s.settofieldfilter),nil)
@@ -79,6 +92,10 @@ function s.extraop(e,tc,tp,sg)
         Duel.RaiseEvent(tc,EVENT_SSET,e,REASON_EFFECT+REASON_FUSION+REASON_MATERIAL,tp,tp,0)
         sg:Sub(tc)
     end
+    local fg=sg:Filter(Card.IsLocation,nil,LOCATION_OVERLAY)
+    if #fg<=0 then return end
+    Duel.SendtoGrave(fg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+    sg:Sub(fg)
 end
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -93,7 +110,7 @@ end
 --Returns the first EFFECT_EXTRA_FUSION_MATERIAL applied on Card c.
 --If summon_card is provided, it will also check if the effect's value function applies to that card.
 --Card.IsHasEffect alone cannot be used because it would return the above effect as well.
-local function GetExtraMatEff(c,summon_card)
+function s.GetExtraMatEff(c,summon_card)
 	local effs={c:IsHasEffect(EFFECT_EXTRA_FUSION_MATERIAL)}
 	for _,eff in ipairs(effs) do
 		if eff~=geff then
@@ -112,10 +129,10 @@ end
 --EFFECT_EXTRA_FUSION_MATERIAL effect has already been used.
 --Returns the main material group and the extra material group separately, both
 --of which are then passed to Fusion.SummonEffFilter.
-local function ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
-	local extra_feff_mg=mg1:Filter(GetExtraMatEff,nil)
+function s.ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
+	local extra_feff_mg=mg1:Filter(s.GetExtraMatEff,nil)
 	if #extra_feff_mg>0 then
-		local extra_feff=GetExtraMatEff(extra_feff_mg:GetFirst())
+		local extra_feff=s.GetExtraMatEff(extra_feff_mg:GetFirst())
 		--Check if you need to remove materials from the pool if count limit has been used
 		if extra_feff and not extra_feff:CheckCountLimit(tp) then
 			--If "extrafil" exists and it doesn't return anything in
@@ -147,7 +164,7 @@ local function ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
 			end
 		end
 	elseif #efmg>0 then
-		local extra_feff=GetExtraMatEff(efmg:GetFirst())
+		local extra_feff=s.GetExtraMatEff(efmg:GetFirst())
 		if extra_feff and not extra_feff:CheckCountLimit(tp) then
 			efmg:Clear()
 		end
@@ -184,7 +201,7 @@ function s.fustg(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 					--Both will be passed to Fusion.SummonEffFilter later.
 					local fmg_all=Duel.GetFusionMaterial(tp)
 					local mg1=fmg_all:Filter(matfilter,nil,e,tp,0)
-					local efmg=fmg_all:Filter(GetExtraMatEff,nil)
+					local efmg=fmg_all:Filter(s.GetExtraMatEff,nil)
 					local checkAddition=nil
 					local repl_flag=false
 					-- Check if can be fusion mat "Spell/Trap"
@@ -192,7 +209,7 @@ function s.fustg(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
                     	return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeck() and c:IsSetCard(0x3D4))
                 	end
 					if #efmg>0 then
-						local extra_feff=GetExtraMatEff(efmg:GetFirst())
+						local extra_feff=s.GetExtraMatEff(efmg:GetFirst())
 						if extra_feff and extra_feff:GetLabelObject() then
 							local repl_function=extra_feff:GetLabelObject()
 							repl_flag=true
@@ -244,7 +261,7 @@ function s.fustg(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 					--Adjust the main material group and the extra material group accordingly
 					--if an OPT EFFECT_EXTRA_FUSION_MATERIAL effect has already been used.
 					--Both will be passed to Fusion.SummonEffFilter later.
-					mg1,efmg=ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
+					mg1,efmg=s.ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
 					local res=Duel.IsExistingMatchingCard(Fusion.SummonEffFilter,tp,location,0,1,nil,fusfilter,e,tp,mg1,gc,chkf,value&0xffffffff,sumlimit,nosummoncheck,sumpos,efmg)
 					Fusion.CheckAdditional=nil
 					Fusion.ExtraGroup=nil
@@ -313,7 +330,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 				--Same as line 167 above
 				local fmg_all=Duel.GetFusionMaterial(tp)
 				local mg1=fmg_all:Filter(matfilter,nil,e,tp,1)
-				local efmg=fmg_all:Filter(GetExtraMatEff,nil)
+				local efmg=fmg_all:Filter(s.GetExtraMatEff,nil)
 				local extragroup=nil
 				local repl_flag=false
 				-- Check if can be fusion mat "Spell/Trap"
@@ -321,7 +338,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
                     return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeck() and c:IsSetCard(0x3D4))
                 end
 				if #efmg>0 then
-					local extra_feff=GetExtraMatEff(efmg:GetFirst())
+					local extra_feff=s.GetExtraMatEff(efmg:GetFirst())
 					if extra_feff and extra_feff:GetLabelObject() then
 						local repl_function=extra_feff:GetLabelObject()
 						repl_flag=true
@@ -373,7 +390,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 				Fusion.CheckAdditional=checkAddition
 				local effswithgroup={}
 				--Same as line 191 above
-				mg1,efmg=ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
+				mg1,efmg=s.ExtraMatOPTCheck(mg1,e,tp,extrafil,efmg)
 				local sg1=Duel.GetMatchingGroup(Fusion.SummonEffFilter,tp,location,0,nil,fusfilter,e,tp,mg1,gc,chkf,value&0xffffffff,sumlimit,nosummoncheck,sumpos,efmg)
 				if #sg1>0 then
 					table.insert(effswithgroup,{e,aux.GrouptoCardid(sg1)})
@@ -441,9 +458,9 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 							tc:SetMaterial(mat1)
 						end
 						--Checks for the case that the Fusion Summoning effect has an "extraop"
-						local extra_feff_mg=mat1:Filter(GetExtraMatEff,nil,tc)
+						local extra_feff_mg=mat1:Filter(s.GetExtraMatEff,nil,tc)
 						if #extra_feff_mg>0 and extraop then
-							local extra_feff=GetExtraMatEff(extra_feff_mg:GetFirst(),tc)
+							local extra_feff=s.GetExtraMatEff(extra_feff_mg:GetFirst(),tc)
 							if extra_feff then
 								local extra_feff_op=extra_feff:GetOperation()
 								--If the operation of the EFFECT_EXTRA_FUSION_MATERIAL effect is different than "extraop",
@@ -496,9 +513,9 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 							--to the GY, and execute the operation of the
 							--EFFECT_EXTRA_FUSION_MATERIAL effect, if it exists.
 							--If it doesn't exist then send the extra materials to the GY.
-							local extra_feff_mg,normal_mg=mat1:Split(GetExtraMatEff,nil,tc)
+							local extra_feff_mg,normal_mg=mat1:Split(s.GetExtraMatEff,nil,tc)
 							local extra_feff
-							if #extra_feff_mg>0 then extra_feff=GetExtraMatEff(extra_feff_mg:GetFirst(),tc) end
+							if #extra_feff_mg>0 then extra_feff=s.GetExtraMatEff(extra_feff_mg:GetFirst(),tc) end
 							if #normal_mg>0 then
 								normal_mg=normal_mg:AddMaximumCheck()
 								Duel.SendtoDeck(normal_mg,nil,2,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
