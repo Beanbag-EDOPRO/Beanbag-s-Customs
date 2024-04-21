@@ -35,6 +35,17 @@ function s.initial_effect(c)
 	e3:SetTarget(s.thtg)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
+	-- Allow Fusion material from opp field
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,2))
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetCode(EFFECT_EXTRA_FUSION_MATERIAL)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetTargetRange(LOCATION_OVERLAY+LOCATION_MZONE,LOCATION_OVERLAY+LOCATION_MZONE)
+	e4:SetTarget(function(e,c) return c:IsSetCard(0x3D4) and not c:IsImmuneToEffect(e) end)
+	e4:SetValue(s.matval)
+	e4:SetLabelObject({s.extrafil_replacement})
+	c:RegisterEffect(e4)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -85,3 +96,39 @@ function s.desrepop(e,tp,eg,ep,ev,re,r,rp)
 	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	Duel.Hint(HINT_CARD,0,id)
 end
+
+--Material Replacement
+function s.matval(e,c)
+	return c and c:IsControler(e:GetHandlerPlayer())
+end
+
+function s.extrafil_repl_filter(c,e)
+	return not c:IsImmuneToEffect(e)
+end
+
+
+function s.extrafil_replacement(e,tp,mg)
+    local mg = Duel.GetMatchingGroup(s.extrafil_repl_filter,tp,LOCATION_MZONE,LOCATION_MZONE,nil,e)
+    local og = Group.CreateGroup()
+    
+    -- Iterate through monster zone
+    if Duel.IsPlayerAffectedByEffect(tp,900817) then
+        for i=0,6 do
+            local check = Duel.GetFieldCard(tp,LOCATION_MZONE,i)
+            if check and check:IsType(TYPE_XYZ) and check:IsCode(900817) then
+                -- If the monster with specific ID exists, add its overlay group to og
+                local og2 = check:GetOverlayGroup()
+                og:Merge(og2)
+            end
+        end
+    end
+    
+    -- Return false if overlay group is empty
+    if og:GetCount() == 0 then
+        return false
+    end
+    
+    return og
+end
+
+
