@@ -51,7 +51,7 @@ end
 
 --
 function s.matfilter(c)
-	return c:IsAbleToDeck() and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD) and not c:IsCode(id)
+	return c:IsAbleToDeck() and not c:IsCode(id)
 end
 function s.checkmat(tp,sg,fc)
 	return fc:IsSetCard(0x3D4) or not sg:IsExists(Card.IsLocation,1,nil,LOCATION_HAND+LOCATION_GRAVE+LOCATION_ONFIELD+LOCATION_REMOVED)
