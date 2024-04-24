@@ -59,12 +59,7 @@ end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
     local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil):GetFirst()
     if not tc then return end
-    aux.ToHandOrElse(tc,tp,
-        Card.IsSSetable,
-        function(c)
-            Duel.SSet(tp,tc)
-        end,
-        aux.Stringid(id,0))
+    aux.ToHandOrElse(tc,tp,Card.IsAbleToGrave,function(c) Duel.SendtoGrave(tc,REASON_EFFECT) end, aux.Stringid(id,0))
     if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
     local g=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_GRAVE,0,nil,e,tp)
     if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
