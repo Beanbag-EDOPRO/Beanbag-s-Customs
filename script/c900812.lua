@@ -27,8 +27,8 @@ function s.initial_effect(c)
 	e4:SetValue(0x3D4)
 	c:RegisterEffect(e4)
 	--Banish to Fusion
-	local fusfilter,matfilter,extrafil,extraop,nosummoncheck,location,extratg=
-	aux.FilterBoolFunction(Card.IsSetCard,0x3D4),s.matfilter,s.fextra,s.extraop,true,LOCATION_EXTRA,s.extratg,Fusion.BanishMaterial
+	local fusfilter,matfilter,extrafil,extraop,extratg=
+	aux.FilterBoolFunction(Card.IsSetCard,0x3D4),s.matfilter,s.fextra,Fusion.BanishMaterial,s.extratg
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(1170)
 	e5:GetLabel(100)
@@ -54,18 +54,27 @@ end
 
 function s.fextra(e,tp,mg)
 	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
-		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)
+		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_GRAVE,0,nil)
 	end
 	return nil
 end
+
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,0,tp,LOCATION_ONFIELD+LOCATION_GRAVE)
 end
 
-function s.matfilter(c)
-	return c:IsAbleToRemove() and c:IsLocation(LOCATION_ONFIELD) and not c:IsCode(id)
+function s.matfilter(c,e,tp)
+    if Duel.IsPlayerAffectedByEffect(tp,900817) then 
+        return (c:IsLocation(LOCATION_ONFIELD+LOCATION_GRAVE) or 
+                (c:IsLocation(LOCATION_OVERLAY) and c:GetOverlayTarget():IsCode(900817))) 
+               and c:IsAbleToRemove() and not c:IsCode(id)
+    else 
+        return c:IsLocation(LOCATION_ONFIELD+LOCATION_GRAVE) 
+               and c:IsAbleToRemove() and not c:IsCode(id)
+    end
 end
+
 function s.checkmat(tp,sg,fc)
 	return fc:IsSetCard(0x3D4) or not sg:IsExists(Card.IsLocation,1,nil,LOCATION_ONFIELD+LOCATION_GRAVE)
 end
