@@ -4,12 +4,6 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--Synchro Summon
 	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x3D),2,2,Synchro.NonTunerEx(Card.IsSetCard,0x3D),1,99)
-	local e0=Effect.CreateEffect(c)
-	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e0:SetType(EFFECT_TYPE_SINGLE)
-	e0:SetCode(EFFECT_SPSUMMON_CONDITION)
-	e0:SetValue(aux.synlimit)
-	c:RegisterEffect(e0)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -23,7 +17,7 @@ function s.initial_effect(c)
 end
 function s.spfilter(c,tp)
 	return c:IsCode(63176202) and c:IsFaceup()
-		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
+		and c:IsAbleToRemoveAsCost()
 end
 function s.rescon(sg,e,tp)
 	return Duel.GetLocationCountFromEx(tp,tp,sg,e:GetHandler())>0
