@@ -36,10 +36,5 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
 	if dg:GetClassCount(Card.GetCode)==0 or dg:GetClassCount(Card.GetCode)<ct then return end
 	local g=Group.CreateGroup()
-	for i=1,ct do
-		local tc=dg:Select(tp,1,1,nil):GetFirst()
-		g:AddCard(tc)
-		dg:Remove(Card.IsCode,nil,tc:GetCode())
-	end
 	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 end
