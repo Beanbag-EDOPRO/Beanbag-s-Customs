@@ -17,6 +17,7 @@ function s.initial_effect(c)
 end
 
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	Duel.GetLocationCount(tp,LOCATION_GRAVE)>4
 	local rg=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_MZONE|LOCATION_GRAVE,0,nil)
 	if chk==0 then return #rg>1 and aux.SelectUnselectGroup(rg,e,tp,2,2,aux.ChkfMMZ(1),0) end
 	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,aux.ChkfMMZ(1),1,tp,HINTMSG_REMOVE)
