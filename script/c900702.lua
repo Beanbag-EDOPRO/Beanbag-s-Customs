@@ -29,10 +29,10 @@ function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rg=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_GRAVE,0,1,ct,e:GetHandler())
 	local rc=Duel.Remove(rg,POS_FACEUP,REASON_COST)
 	Duel.SetTargetParam(rc)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,rc,tp,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,rc,tp,LOCATION_GRAVE)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	local dg=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil)
+	local dg=Duel.GetMatchingGroup(s.filter,tp,LOCATION_GRAVE,0,nil)
 	local ct=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
 	if dg:GetClassCount(Card.GetCode)==0 or dg:GetClassCount(Card.GetCode)<ct then return end
 	local g=Group.CreateGroup()
@@ -41,5 +41,5 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		g:AddCard(tc)
 		dg:Remove(Card.IsCode,nil,tc:GetCode())
 	end
-	Duel.SpecialSummon(g,nil,REASON_EFFECT)
+	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 end
