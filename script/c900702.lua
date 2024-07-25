@@ -9,11 +9,20 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
+	e1:SetCost(s.thcost)
 	e1:SetCountLimit(1,id)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
 end
+
+function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(s.cfilter,tp,Card.IsAbleToRemove,tp,0,LOCATION_GRAVE,1,2,nil)
+	if g:GetCount()>0 then
+		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
+end
+
 function s.cfilter(c)
 	return c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0x3D) and c:IsAbleToRemoveAsCost()
 end
@@ -21,20 +30,18 @@ function s.filter(c)
 	return c:IsSetCard(0x3D) and c:IsType(TYPE_TUNER) and c:IsSummonable(true,nil)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_GRAVE,0,1,e:GetHandler())
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
-	local dg=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil)
-	local ct=math.min(2,dg:GetClassCount(Card.GetCode))
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local rg=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_GRAVE,0,1,ct,e:GetHandler())
-	local rc=Duel.Remove(rg,POS_FACEUP,REASON_COST)
-	Duel.SetTargetParam(rc)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,rc,tp,LOCATION_GRAVE)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,Card.IsAbleToRemove,tp,0,LOCATION_GRAVE,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,0,0)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	local dg=Duel.GetMatchingGroup(s.filter,tp,LOCATION_GRAVE,0,nil)
-	local ct=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
-	if dg:GetClassCount(Card.GetCode)==0 or dg:GetClassCount(Card.GetCode)<ct then return end
-	local g=Group.CreateGroup()
-	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+	if ft<=0 then return end
+	if ft>2 then ft=2 end
+	if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,ft,nil,e,tp)
+	if #g~=0 then
+		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+	end
+end
 end
