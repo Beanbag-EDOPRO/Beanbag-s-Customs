@@ -4,36 +4,62 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--Synchro Summon
 	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x3D),2,2,Synchro.NonTunerEx(Card.IsSetCard,0x3D),1,99)
+		local e0=Effect.CreateEffect(c)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e0:SetType(EFFECT_TYPE_SINGLE)
+	e0:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e0:SetValue(aux.synlimit)
+	c:RegisterEffect(e0)
+	--Special Summon procedure
 	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(LOCATION_EXTRA)
-	e1:SetCondition(s.hspcon)
-	e1:SetTarget(s.hsptg)
-	e1:SetOperation(s.hspop)
+	e1:SetCondition(s.spcon)
+	e1:SetTarget(s.sptg)
+	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
 end
-function s.hspfilter(c,tp,sc)
-	return c:IsCode(63176202) and c:IsFaceup()
+function s.spfilter1(c,tp)
+	return c:IsSetCard(0x3D) and c:IsType(TYPE_TUNER) and c:IsFaceup()
+		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
 end
-function s.hspcon(e,c)
+function s.spfilter2(c,tp)
+	return c:IsCode(63176202) and c:IsFaceup()
+		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
+end
+function s.rescon(sg,e,tp)
+	return Duel.GetLocationCountFromEx(tp,tp,sg,e:GetHandler())>0
+		and sg:FilterCount(s.spfilter1,nil,tp)==1
+		and sg:FilterCount(s.spfilter2,nil,tp)==1
+end
+function s.spcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return Duel.CheckReleaseGroup(tp,s.hspfilter,1,false,1,true,c,tp,nil,nil,nil,tp,c)
+	local g1=Duel.GetMatchingGroup(s.spfilter1,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil,tp)
+	local g2=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil,tp)
+	local g=g1:Clone()
+	g:Merge(g2)
+	return #g1>0 and #g2>0 and aux.SelectUnselectGroup(g,e,tp,2,2,s.rescon,0)
 end
-function s.hsptg(e,tp,eg,ep,ev,re,r,rp,chk,c)
-	local g=Duel.SelectReleaseGroup(tp,s.hspfilter,1,1,false,true,true,c,tp,nil,false,nil,tp,c)
-	if g then
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,c)
+	local g1=Duel.GetMatchingGroup(s.spfilter1,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil,tp)
+	local g2=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil,tp)
+	local rg=g1:Clone()
+	rg:Merge(g2)
+	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,s.rescon,1,tp,HINTMSG_REMOVE,nil,nil,true)
+	if #g>0 then
 		g:KeepAlive()
 		e:SetLabelObject(g)
-	return true
+		return true
 	end
 	return false
 end
-function s.hspop(e,tp,eg,ep,ev,re,r,rp,c)
+function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=e:GetLabelObject()
 	if not g then return end
-	Duel.Release(g,REASON_COST)
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
 	g:DeleteGroup()
 end
