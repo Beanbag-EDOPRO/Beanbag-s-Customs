@@ -27,7 +27,7 @@ function s.spfilter1(c,tp)
 		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
 end
 function s.spfilter2(c,tp)
-	return c:IsCode(63176202) and c:IsFaceup()
+	return c:IsCode(CARD_GREAT_SHOGUN_SHIEN) and c:IsFaceup()
 		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
 end
 function s.rescon(sg,e,tp)
