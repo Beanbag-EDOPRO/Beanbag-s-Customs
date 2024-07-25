@@ -21,22 +21,26 @@ function s.initial_effect(c)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
 end
-function s.spfilter(c,tp)
-	return c:IsCode(63176202) and c:IsFaceup()
-		and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
+function s.spfilter(c,tp,sc)
+	return c:IsCode(63176202) and c:IsAbleToRemoveAsCost() and Duel.GetLocationCountFromEx(tp,tp,c,sc)>0
 end
 function s.spcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	local g1=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil,tp)
+	return Duel.CheckReleaseGroup(tp,s.spfilter,1,false,1,true,c,tp,nil,nil,nil,tp,c)
 end
-function s.sptg(e,tp,eg,ep,ev,re,r,rp,c)
-	local g1=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil,tp)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,c)
+	local g=Duel.SelectReleaseGroup(tp,s.spfilter,1,1,false,true,true,c,tp,nil,false,nil,tp,c)
+	if g then
+		g:KeepAlive()
+		e:SetLabelObject(g)
+	return true
+	end
 	return false
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=e:GetLabelObject()
 	if not g then return end
-	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	Duel.Remove(g,REASON_COST+REASON_MATERIAL)
 	g:DeleteGroup()
 end
