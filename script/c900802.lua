@@ -51,14 +51,14 @@ end
 
 --
 function s.matfilter(c)
-	return c:IsAbleToDeck() and not c:IsCode(id)
+	return c:IsAbleToDeckOrExtraAsCost() and not c:IsCode(id)
 end
 function s.checkmat(tp,sg,fc)
-	return fc:IsSetCard(0x3D4) or not sg:IsExists(Card.IsLocation,1,nil,LOCATION_HAND+LOCATION_GRAVE+LOCATION_ONFIELD+LOCATION_REMOVED)
+	return sg:IsExists(Card.IsLocation,1,nil,LOCATION_HAND+LOCATION_GRAVE+LOCATION_ONFIELD+LOCATION_REMOVED)
 end
 
 function s.tdcfilter(c)
-	return ((c:IsFaceup() and c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED)) or (c:IsSpellTrap() and c:IsSetCard(0x3D4) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD))) and c:IsAbleToDeck() and not c:IsCode(id)
+	return ((c:IsFaceup() and c:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED)) or (c:IsSpellTrap() and c:IsSetCard(0x3D4) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD))) and c:IsAbleToDeckOrExtraAsCost() and not c:IsCode(id)
 end
 
 function s.fextra(e,tp,mg)
@@ -156,7 +156,7 @@ end
 
 
 function s.spelltrapfilter(c)
-    return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeck() and c:IsSetCard(0x3D4))
+    return c:IsCanBeFusionMaterial() or (c:IsSpellTrap() and c:IsAbleToDeckOrExtraAsCost() and c:IsSetCard(0x3D4))
 end
 
 function s.fustg(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,value,location,chkf,preselect,nosummoncheck,mincount,maxcount,sumpos)
@@ -490,7 +490,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 							if #extra_feff_mg>0 then extra_feff=s.GetExtraMatEff(extra_feff_mg:GetFirst(),tc) end
 							if #normal_mg>0 then
 								normal_mg=normal_mg:AddMaximumCheck()
-								Duel.SendtoGrave(normal_mg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+								Duel.SendtoDeck(normal_mg,nil,2,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 							end
 							if extra_feff then
 								local extra_feff_op=extra_feff:GetOperation()
@@ -498,7 +498,7 @@ function s.fusop(fusfilter,matfilter,extrafil,extraop,gc2,stage2,exactcount,valu
 									extra_feff_op(e,tc,tp,extra_feff_mg)
 								else
 									extra_feff_mg=extra_feff_mg:AddMaximumCheck()
-									Duel.SendtoGrave(extra_feff_mg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+									Duel.SendtoDeck(extra_feff_mg,nil,2,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 								end
 								--If the EFFECT_EXTRA_FUSION_MATERIAL effect is OPT
 								--then "use" its count limit.

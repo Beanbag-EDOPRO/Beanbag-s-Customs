@@ -106,29 +106,28 @@ function s.extrafil_repl_filter(c,e)
 	return not c:IsImmuneToEffect(e)
 end
 
-
 function s.extrafil_replacement(e,tp,mg)
-    local mg = Duel.GetMatchingGroup(s.extrafil_repl_filter,tp,LOCATION_MZONE,LOCATION_MZONE,nil,e)
-    local og = Group.CreateGroup()
-    
+    local g=Duel.GetMatchingGroup(s.extrafil_repl_filter,tp,LOCATION_MZONE,LOCATION_MZONE,nil,e)
+    local og=Group.CreateGroup()
     -- Iterate through monster zone
     if Duel.IsPlayerAffectedByEffect(tp,900817) then
         for i=0,6 do
-            local check = Duel.GetFieldCard(tp,LOCATION_MZONE,i)
+            local check=Duel.GetFieldCard(tp,LOCATION_MZONE,i)
             if check and check:IsType(TYPE_XYZ) and check:IsCode(900817) then
                 -- If the monster with specific ID exists, add its overlay group to og
-                local og2 = check:GetOverlayGroup()
+                local og2=check:GetOverlayGroup()
                 og:Merge(og2)
             end
         end
     end
-    
     -- Return false if overlay group is empty
-    if og:GetCount() == 0 then
+    if og:GetCount()==0 then
         return false
     end
-    
-    return og
+    return og,s.fcheck_replacement
 end
 
+function s.fcheck_replacement(tp,sg,fc)
+	return sg:FilterCount(Card.IsLocation,nil,LOCATION_OVERLAY)<=99
+end
 
