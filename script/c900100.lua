@@ -131,10 +131,10 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e2,true)
-	end
 	Duel.SpecialSummon(tc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)>0 then
 		local c=e:GetHandler()
 		if c:IsRelateToEffect(e) then
 			Duel.Overlay(tc,c)
 		end
 	end
+end
