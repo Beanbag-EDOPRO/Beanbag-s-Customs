@@ -18,10 +18,10 @@ end
 function s.spcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return Duel.CheckReleaseGroup(tp,s.cfilter,1,false,1,true,c,tp,nil,false,nil)
+	return Duel.CheckReleaseGroup(s.cfilter,tp,LOCATION_EXTRA+ONFIELD,0,nil)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,c)
-	local g=Duel.SelectReleaseGroup(tp,s.cfilter,1,1,false,true,true,c,tp,nil,false,nil)
+	local g=Duel.SelectReleaseGroup(s.cfilter,tp,LOCATION_EXTRA+ONFIELD,0,nil)
 	if g then
 		g:KeepAlive()
 		e:SetLabelObject(g)
