@@ -49,7 +49,7 @@ function s.selfspop(e,tp,eg,ep,ev,re,r,rp,c)
 end
 
 function s.thcfilter(c,tp)
-	return c:IsSetCard(0x385) and c:IsReleasable()
+	return c:IsSetCard(0x385) and c:IsReleasable() and not c:IsCode(id)
 		and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsAbleToHand),tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -58,7 +58,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Release(g,REASON_COST)
 end
 function s.filter(c,e,tp)
-	return c:IsSetCard(0x385) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x385) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
