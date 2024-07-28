@@ -72,10 +72,7 @@ function s.thcfilter(c,tp)
 		and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsAbleToHand),tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,1,1,true,nil,nil,tp)
-	Duel.Release(g,REASON_COST)
-		if chk==0 then return Duel.GetActivityCount(tp,ACTIVITY_SPSUMMON)==0 end
+	if chk==0 then return Duel.GetActivityCount(tp,ACTIVITY_SPSUMMON)==0 end
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
@@ -89,6 +86,9 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e2:SetReset(RESET_PHASE+PHASE_END)
 	e2:SetTargetRange(1,0)
 	Duel.RegisterEffect(e2,tp)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
+	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,1,1,true,nil,nil,tp)
+	Duel.Release(g,REASON_COST)
 end
 function s.filter(c,e,tp)
 	return c:IsSetCard(0x385) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
