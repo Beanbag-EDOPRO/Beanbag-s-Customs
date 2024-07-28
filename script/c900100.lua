@@ -14,15 +14,26 @@ function s.initial_effect(c)
 	e1:SetOperation(s.selfspop)
 	c:RegisterEffect(e1)
     local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_RELEASE)
     e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,{id,1})
 	e2:SetCost(s.thcost)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,2))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_RELEASE)
+	e3:SetCountLimit(1,{id,2})
+	e3:SetCondition(s.xyzcon)
+	e3:SetTarget(s.xyztg)
+	e3:SetOperation(s.xyzop)
+	c:RegisterEffect(e3)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetActivityCount(tp,ACTIVITY_SPSUMMON)==0 end
@@ -125,4 +136,27 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.splimit(e,c)
 	return not c:IsSetCard(0x385)
+end
+function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:IsLocation(LOCATION_GRAVE)
+end
+function s.xyzfilter(c,e,tp)
+	return c:IsSetCard(0x385) and c:IsType(TYPE_XYZ) and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0 and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.xyzfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
+end
+
+function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+	local tc=g:GetFirst()
+	if tc and Duel.SpecialSummon(tc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)>0 then
+		local c=e:GetHandler()
+		if c:IsRelateToEffect(e) then
+			Duel.Overlay(tc,c)
+		end
+	end
 end
