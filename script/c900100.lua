@@ -23,6 +23,16 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e4:SetType(EFFECT_TYPE_QUICK_O)
+	e4:SetCode(EVENT_RELEASE)
+	e4:SetCountLimit(1,{id,2})
+	e4:SetCondition(s.xyzcon)
+	e4:SetTarget(s.xyztg)
+	e4:SetOperation(s.xyzop)
+	c:RegisterEffect(e4)
 end
 function s.selfspconfilter(c)
 	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x385) and c:IsAbleToGraveAsCost()
@@ -93,4 +103,27 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.splimit(e,c)
 	return not c:IsSetCard(0x385)
+end
+function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+end
+
+function s.xyzfilter(c,e,tp)
+	return c:IsSetCard(0x385) and c:IsType(TYPE_XYZ) and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0 and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.xyzfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
+end
+
+function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+	local tc=g:GetFirst()
+	if tc and Duel.SpecialSummon(tc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)>0 then
+		local c=e:GetHandler()
+		if c:IsRelateToEffect(e) then
+			Duel.Overlay(tc,c)
+		end
+	end
 end
