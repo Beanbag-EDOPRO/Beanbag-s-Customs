@@ -108,7 +108,7 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
 function s.xfilter(c,e,tp)
-	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x385) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
+	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x385)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
