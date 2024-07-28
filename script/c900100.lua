@@ -1,6 +1,7 @@
+--Magmalith Obsidian
+--scripted by Beanbag
 local s,id=GetID()
 function s.initial_effect(c)
-	--Special Summon this card from the hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -34,6 +35,9 @@ function s.initial_effect(c)
 	e3:SetOperation(s.xyzop)
 	c:RegisterEffect(e3)
 end
+
+--SUMMON SELF
+
 function s.selfspconfilter(c)
 	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x385) and c:IsAbleToGraveAsCost()
 end
@@ -58,6 +62,8 @@ function s.selfspop(e,tp,eg,ep,ev,re,r,rp,c)
 	if not g then return end
 	Duel.SendtoGrave(g,REASON_COST)
 end
+
+--TRIB TO SUMMON FROM DECK
 
 function s.thcfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsReleasable() and not c:IsCode(id)
@@ -104,6 +110,9 @@ end
 function s.splimit(e,c)
 	return not c:IsSetCard(0x385)
 end
+
+-- XYZ FROM GY
+
 function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
 		local c=e:GetHandler()
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD+LOCATION_HAND)
@@ -125,5 +134,22 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.BreakEffect()
 		c:CancelToGrave()
 		Duel.Overlay(tc,c)
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e1:SetTargetRange(1,0)
+	e1:SetTarget(s.splimit)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+	local e2=e1:Clone()
+	e2:SetCode(EFFECT_CANNOT_SUMMON)
+	Duel.RegisterEffect(e2,tp)
+	local e3=Effect.CreateEffect(e:GetHandler())
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+	e3:SetDescription(aux.Stringid(id,4))
+	e3:SetReset(RESET_PHASE+PHASE_END)
+	e3:SetTargetRange(1,0)
+	Duel.RegisterEffect(e3,tp)
 	end
 end
