@@ -29,9 +29,9 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_RELEASE)
-	e3:SetCondition(s.spcon)
-	e3:SetTarget(s.sptg)
-	e3:SetOperation(s.spop)
+	e3:SetCondition(s.xyzcon)
+	e3:SetTarget(s.xyztg)
+	e3:SetOperation(s.xyzop)
 	c:RegisterEffect(e3)
 end
 function s.selfspconfilter(c)
@@ -104,7 +104,7 @@ end
 function s.splimit(e,c)
 	return not c:IsSetCard(0x385)
 end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
 		local c=e:GetHandler()
 	return c:IsPreviousLocation(LOCATION_ONFIELD+LOCATION HAND)
 end
