@@ -34,7 +34,6 @@ function s.initial_effect(c)
 	e3:SetTarget(s.xyztg)
 	e3:SetOperation(s.xyzop)
 	c:RegisterEffect(e3)
-
 end
 
 --SUMMON SELF
@@ -135,7 +134,7 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.BreakEffect()
 		c:CancelToGrave()
 		Duel.Overlay(tc,c)
-					local e1=Effect.CreateEffect(e:GetHandler())
+	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
