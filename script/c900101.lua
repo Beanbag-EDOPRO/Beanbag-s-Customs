@@ -124,3 +124,6 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e3,tp)
 	end
 end
+function s.splimit(e,c)
+	return not c:IsSetCard(0x385)
+end

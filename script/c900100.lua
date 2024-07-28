@@ -107,9 +107,6 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e3,tp)
 	end
 end
-function s.splimit(e,c)
-	return not c:IsSetCard(0x385)
-end
 
 -- XYZ FROM GY
 
@@ -152,4 +149,7 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetTargetRange(1,0)
 	Duel.RegisterEffect(e3,tp)
 	end
+end
+function s.splimit(e,c)
+	return not c:IsSetCard(0x385)
 end
