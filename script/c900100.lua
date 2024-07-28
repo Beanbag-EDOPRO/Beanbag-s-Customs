@@ -48,9 +48,7 @@ function s.selfspop(e,tp,eg,ep,ev,re,r,rp,c)
 	if not g then return end
 	Duel.SendtoGrave(g,REASON_COST)
 end
-function s.splimit(e,c)
-	return not c:IsSetCard(0x10ec)
-end
+
 function s.thcfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsReleasable() and not c:IsCode(id)
 		and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsAbleToHand),tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c)
