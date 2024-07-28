@@ -1,5 +1,5 @@
 --Magmalith Basalt
---scripted by Beanbag.
+--scripted by Beanbag
 local s,id=GetID()
 function s.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
@@ -20,7 +20,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
-	local e2=e3:Clone()
+	local e3=e2:Clone()
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 	local e4=Effect.CreateEffect(c)
