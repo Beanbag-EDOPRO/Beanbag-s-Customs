@@ -120,8 +120,8 @@ end
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local tc=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
-	if tc and Duel.SpecialSummon(tc,0,tp,tp,true,true,POS_FACEUP)>0 and c:IsRelateToEffect(e) then
+	local tc=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp):GetFirst()
+	if tc and Duel.SpecialSummon(tc,SUMMON_TYPE_XYZ,tp,tp,true,true,POS_FACEUP)>0 and c:IsRelateToEffect(e) then
 		Duel.BreakEffect()
 		c:CancelToGrave()
 		Duel.Overlay(tc,c)
