@@ -106,7 +106,7 @@ function s.splimit(e,c)
 end
 function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
 		local c=e:GetHandler()
-	return c:IsPreviousLocation(LOCATION_ONFIELD+LOCATION HAND)
+	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD+LOCATION_HAND)
 end
 function s.xyzfilter(c,e,tp)
 	return c:IsSetCard(0x385) and c:IsType(TYPE_XYZ)
