@@ -31,8 +31,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.BreakEffect()
 	Duel.Release(g,REASON_EFFECT)
 end
-	
-
+end	
+end
 
 
 function s.thcfilter(c,tp)
