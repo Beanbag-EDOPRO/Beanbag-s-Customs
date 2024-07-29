@@ -36,6 +36,6 @@ end
 
 
 function s.thcfilter(c,tp)
-	return c:IsSetCard(0x385) and c:IsReleasable() and not c:IsCode(id)
+	return c:IsSetCard(0x385) and c:IsMonster() and c:IsReleasable() and not c:IsCode(id)
 		and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsAbleToHand),tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c)
 end
