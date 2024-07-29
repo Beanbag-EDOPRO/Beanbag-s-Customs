@@ -24,10 +24,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
+    Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
 	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,1,1,true,nil,nil,tp)
 	Duel.Release(g,REASON_COST)
-	end
 end
 	
 
