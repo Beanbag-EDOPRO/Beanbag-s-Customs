@@ -18,8 +18,20 @@ function s.initial_effect(c)
 	e1:SetTarget(s.xtg)
 	e1:SetOperation(s.xop)
 	c:RegisterEffect(e1)
-
-
+	--Change a monster effect to "Tribute 1" monster they control
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_RELEASE)
+	e2:SetType(EFFECT_TYPE_QUICK_O)
+	e2:SetCode(EVENT_CHAINING)
+	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,{id,1})
+	e2:SetCost(aux.dxmcostgen(2,2,nil))
+	e2:SetCondition(s.chcon)
+	e2:SetTarget(s.chtg)
+	e2:SetOperation(s.chop)
+	c:RegisterEffect(e2)
     --Tributed = Special Summon 2 
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
@@ -62,6 +74,30 @@ function s.xop(e,tp,eg,ep,ev,re,r,rp)
 	if tc then
 		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
+	end
+end
+
+-- EFF 2
+
+function s.chcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsStatus(STATUS_BATTLE_DESTROYED) then return false end
+	return Duel.IsChainNegatable(ev) and Duel.GetTurnPlayer()~=tp
+end
+function s.chtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsReleasableByEffect,tp,LOCATION_MZONE,0,1,nil) end
+end
+function s.chop(e,tp,eg,ep,ev,re,r,rp)
+	local g=Group.CreateGroup()
+	Duel.ChangeTargetCard(ev,g)
+	Duel.ChangeChainOperation(ev,s.repop)
+end
+function s.repop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
+	local g=Duel.SelectMatchingCard(tp,Card.IsReleasableByEffect,tp,LOCATION_MZONE,0,1,1,nil)
+	if #g>0 then
+		Duel.HintSelection(g,true)
+		Duel.Release(g,REASON_EFFECT)
 	end
 end
 
