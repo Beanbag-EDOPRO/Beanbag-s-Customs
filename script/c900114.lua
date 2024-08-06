@@ -63,6 +63,9 @@ end
 function s.xyzfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:IsSetCard(0x385)
 end
+function s.xyzfilter2(c)
+	return c:IsMonster() and c:IsSetCard(0x385)
+end
 function s.mattg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.xyzfilter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(s.xyzfilter,tp,LOCATION_MZONE,0,1,nil)
@@ -76,7 +79,7 @@ function s.matop(e,tp,eg,ep,ev,re,r,rp)
 	if tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsType(TYPE_XYZ)
 		and not tc:IsImmuneToEffect(e) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-		local g=Duel.SelectMatchingCard(tp,Card.IsSetCard,tp,LOCATION_GRAVE,0,1,1,nil,0x385)
+		local g=Duel.SelectMatchingCard(s.xyzfilter2,tp,LOCATION_GRAVE,0,1,1,nil)
 		if #g==0 then return end
 		Duel.Overlay(tc,g)
 	local e1=Effect.CreateEffect(e:GetHandler())
