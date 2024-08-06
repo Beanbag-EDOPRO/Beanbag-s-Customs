@@ -13,6 +13,11 @@ function s.initial_effect(c)
 	e1:SetTarget(s.drtg)
 	e1:SetOperation(s.drop)
 	c:RegisterEffect(e1)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
+end
+function s.counterfilter(c)
+	return c:IsSetCard(0x385)
 end
 function s.drfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsReleasable()
