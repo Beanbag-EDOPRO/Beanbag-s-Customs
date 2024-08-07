@@ -48,7 +48,7 @@ end
 function s.tribfilter2(c)
 	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:IsSetCard(0x385)
 end
-function s.drcon(e,tp,eg,ep,ev,re,r,rp)
+function s.tribcon(e,tp,eg,ep,ev,re,r,rp)
     return eg:IsExists(s.tribfilter2,1,nil)
 end
 function s.tribfilter(c,tp)
