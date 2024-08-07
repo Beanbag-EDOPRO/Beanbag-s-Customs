@@ -46,7 +46,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.tribcon(e,tp,eg,ep,ev,re,r,rp)
-	return c:IsSummonType(SUMMON_TYPE_XYZ) and c:IsSetCard(0x385)
+	return c:IsSetCard(0x385)
 end
 function s.tribfilter(c,tp)
 	return Duel.CheckReleaseGroup(1-tp,nil,1,c)
