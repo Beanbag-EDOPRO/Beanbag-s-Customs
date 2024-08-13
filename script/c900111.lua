@@ -19,7 +19,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.bantg)
 	e2:SetOperation(s.banop)
 	e2:SetCost(aux.bfgcost)
-    c:RegisterEffect(e3)
+    c:RegisterEffect(e2)
 end
 function s.filter1(c)
 	return c:IsFaceup() and c:IsSetCard(0x385) and c:IsType(TYPE_XYZ)
