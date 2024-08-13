@@ -9,6 +9,9 @@ function s.initial_effect(c)
     e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_MZONE)
+	e1:SetCountLimit(1,id)
+	e1:SetHintTiming(0,TIMING_MAIN_END)
+	e1:SetCondition(function() return Duel.IsMainPhase() end)
 	e1:SetCost(s.cost)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
@@ -35,7 +38,7 @@ end
 --TRIBUTE EFFECT
 
 function s.thcfilter(c,tp)
-	return c:IsMonster() and c:IsSetCard(0x385) and c:IsReleasable()
+	return c:IsMonster() and c:IsSetCard(0x385) and c:IsType(TYPE_XYZ) and c:IsReleasable()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
