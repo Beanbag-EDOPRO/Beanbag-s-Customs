@@ -13,7 +13,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.filter1(c)
-	return c:IsFaceup() and c:IsSetCard(0x385)
+	return c:IsFaceup() and c:IsSetCard(0x385) and c:IsType(TYPE_XYZ)
 end
 function s.filter2(c)
 	return c:IsFaceup() and c:IsCode(900110)
