@@ -39,7 +39,7 @@ function s.thcfilter(c,tp)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,1,true,nil,nil,tp) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,2,1,true,nil,nil,tp)
+	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,1,1,true,nil,nil,tp)
 	Duel.Release(g,REASON_COST)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
