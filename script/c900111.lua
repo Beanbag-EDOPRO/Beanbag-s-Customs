@@ -16,6 +16,8 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCountLimit(1)
+	e2:SetTarget(s.bantg)
+	e2:SetOperation(s.banop)
 	e2:SetCost(aux.bfgcost)
     c:RegisterEffect(e3)
 end
