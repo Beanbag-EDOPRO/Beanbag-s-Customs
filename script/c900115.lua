@@ -31,6 +31,9 @@ function s.sendtarget(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK+LOCATION_EXTRA)
 end
 function s.sendactivate(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(s.sendfilter2,tp,LOCATION_DECK+LOCATION_EXTRA,0,nil)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+	Duel.BreakEffect()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(tp,s.sendfilter2,tp,LOCATION_DECK+LOCATION_EXTRA,0,1,1,nil)
 	if #g>0 then
