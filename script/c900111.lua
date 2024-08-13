@@ -15,14 +15,13 @@ end
 function s.filter1(c)
 	return c:IsFaceup() and c:IsSetCard(0x385)
 end
-function s.filter1(c)
+function s.filter2(c)
 	return c:IsFaceup() and c:IsCode(900110)
 end
-function s.con(e,c)
-	if c==nil then return true end
-	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
-		and	Duel.IsExistingMatchingCard(s.filter1,c:GetControler(),LOCATION_MZONE,0,2,nil)
-		or Duel.IsExistingMatchingCard(s.filter2,c:GetControler(),LOCATION_MZONE,0,1,nil)
+
+function s.con(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_MZONE,0,2,nil)
+	or Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,e:GetHandler()) end
