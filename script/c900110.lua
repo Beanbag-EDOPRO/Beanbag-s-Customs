@@ -37,7 +37,7 @@ end
 function s.thcfilter(c,tp)
 	return c:IsMonster() and c:IsSetCard(0x385) and c:IsReleasable()
 end
-function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.thcfilter,2,true,nil,nil,tp) end
 	local g=Duel.SelectReleaseGroupCost(tp,s.thcfilter,1,1,true,nil,nil,tp)
 	Duel.Release(g,REASON_COST)
