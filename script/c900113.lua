@@ -28,6 +28,15 @@ function s.initial_effect(c)
 	e3:SetTarget(s.thtg)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
+    local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetType(EFFECT_TYPE_IGNITION)
+	e4:SetRange(LOCATION_GRAVE)
+	e4:SetCountLimit(1,id)
+	e4:SetCost(s.gycost)
+	e4:SetTarget(s.gytg)
+	e4:SetOperation(s.gyop)
+	c:RegisterEffect(e4)
 end
 
 function s.thfilter(c)
@@ -66,5 +75,23 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectReleaseGroup(1-tp,nil,1,1,nil)
 	if g then
 		Duel.Release(g,REASON_RULE,1-tp)
+	end
+end
+function s.cfilter(c)
+	return c:IsCode(900110) and c:IsReleasable()
+end
+function s.gycost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,nil) end
+	local g=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.Release(g,REASON_COST)
+end
+function s.gytg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsAbleToHand() end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,e:GetHandler(),1,0,0)
+end
+function s.gyop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoHand(c,nil,REASON_EFFECT)
 	end
 end
