@@ -10,7 +10,6 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
 	e1:SetCountLimit(1,id)
-	e1:SetTarget(s.sendtarget)
 	e1:SetOperation(s.sendactivate)
 	c:RegisterEffect(e1)
 end
@@ -20,19 +19,17 @@ end
 function s.sendfilter2(c)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsAbleToGrave()
 end
-function s.sendtarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK+LOCATION_EXTRA)
-end
 function s.sendactivate(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local g=Duel.GetMatchingGroup(s.sendfilter2,tp,LOCATION_DECK+LOCATION_EXTRA,0,nil)
-	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local sg=g:Select(tp,1,1,nil)
-		Duel.SendtoGrave(sg,REASON_EFFECT)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.sendfilter,1,true,nil,nil,tp) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.sendfilter,1,1,true,nil,nil,tp)
-	Duel.Release(g,REASON_COST)
+	local g=Duel.GetMatchingGroup(s.sendfilter,tp,LOCATION_HAND+LOCATION_MZONE,0,nil)
+	if #g==0 or not Duel.SelectYesNo(tp,aux.Stringid(id,0)) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local tg=g:Select(tp,1,1,nil)
+	if #tg>0 then
+	Duel.Release(tg,REASON_EFFECT)
+	Duel.BreakEffect()
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local g=Duel.SelectMatchingCard(tp,s.sendfilter2,tp,LOCATION_DECK+LOCATION_EXTRA,0,1,1,nil)
+	if #g>0 then
+	Duel.SendtoGrave(g,REASON_EFFECT)
 	end
 end
