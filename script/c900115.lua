@@ -26,7 +26,7 @@ function s.sendfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsReleasable()
 end
 function s.sendfilter2(c)
-	return c:IsSetCard(0x385) and c:IsMonster() and c:IsAbleToGrave()
+	return c:IsSetCard(0x385) and c:IsAbleToGrave()
 end
 function s.sendactivate(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(s.sendfilter,tp,LOCATION_HAND+LOCATION_MZONE,0,nil)
