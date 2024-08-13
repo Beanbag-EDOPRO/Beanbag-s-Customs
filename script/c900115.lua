@@ -18,11 +18,6 @@ end
 function s.sendfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsReleasable()
 end
-function s.sendcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.sendfilter,1,true,nil,nil,tp) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.sendfilter,1,1,true,nil,nil,tp)
-	Duel.Release(g,REASON_COST)
-end
 function s.sendfilter2(c)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsAbleToGrave()
 end
@@ -34,8 +29,10 @@ function s.sendactivate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local g=Duel.GetMatchingGroup(s.sendfilter2,tp,LOCATION_DECK+LOCATION_EXTRA,0,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+	Duel.CheckReleaseGroupCost(tp,s.sendfilter,1,true,nil,nil,tp) end
+	local g=Duel.SelectReleaseGroupCost(tp,s.sendfilter,1,1,true,nil,nil,tp)
+	Duel.Release(g,REASON_COST)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.SendtoGrave(sg,REASON_EFFECT)
-	end
 end
