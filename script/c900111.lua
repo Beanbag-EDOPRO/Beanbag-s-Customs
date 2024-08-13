@@ -44,8 +44,8 @@ function s.spfilter(c,e,tp)
 end
 function s.bantg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,2,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_RELEASE,nil,1,tp,LOCATION_MZONE+LOCATION_HAND)
+		and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_RELEASE,nil,1,tp,LOCATION_MZONE|LOCATION_HAND)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
 end
 function s.trfilter(c)
@@ -53,13 +53,14 @@ function s.trfilter(c)
 end
 function s.banop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<2 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+	if #g>0 and Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP_DEFENSE)>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
-		local g=Duel.SelectMatchingCard(tp,s.trfilter,tp,LOCATION_MZONE|LOCATION_HAND,0,2,1,nil)
+		local g=Duel.SelectMatchingCard(tp,s.trfilter,tp,LOCATION_MZONE|LOCATION_HAND,0,1,1,nil)
 		if #g>0 then
-		Duel.Release(g,REASON_EFFECT)
-		Duel.BreakEffect()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	    local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,2,1,nil,e,tp)
-	    Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
+			Duel.BreakEffect()
+			Duel.Release(g,REASON_EFFECT)
+		end
 	end
 end
