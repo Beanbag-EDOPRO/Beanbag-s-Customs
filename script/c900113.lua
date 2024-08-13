@@ -25,7 +25,6 @@ function s.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetRange(LOCATION_FZONE)
 	e3:SetCountLimit(1,{id,1})
-	e3:SetCost(s.tribcost)
 	e3:SetCondition(s.tribcon)
 	e3:SetTarget(s.tribtg)
 	e3:SetOperation(s.tribop)
@@ -51,22 +50,22 @@ end
 function s.tribcon(e,tp,eg,ep,ev,re,r,rp)
     return eg:IsExists(s.tribfilter2,1,nil)
 end
-function s.tribfilter(c,tp)
-	return Duel.CheckReleaseGroup(1-tp,nil,1,c)
-end
-function s.tribcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.tribfilter,1,false,nil,nil,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
-	local g=Duel.SelectReleaseGroupCost(tp,s.tribfilter,1,1,false,nil,nil,tp)
-	Duel.Release(g,REASON_COST)
-end
+
 function s.tribtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroup(1-tp,nil,1,nil) end
+	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) and Duel.IsPlayerCanDraw(1-tp,1) end
+	Duel.SetOperationInfo(0,CATEGORY_HANDES,nil,0,PLAYER_ALL,1)
+	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,PLAYER_ALL,1)
 end
 function s.tribop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_RELEASE)
-	local g=Duel.SelectReleaseGroup(1-tp,nil,1,1,nil)
-	if g then
-		Duel.Release(g,REASON_RULE,1-tp)
+	local h1=Duel.Draw(tp,1,REASON_EFFECT)
+	local h2=Duel.Draw(1-tp,1,REASON_EFFECT)
+	if h1>0 or h2>0 then Duel.BreakEffect() end
+	if h1>0 then
+		Duel.ShuffleHand(tp)
+		Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT+RELEASE)
+	end
+	if h2>0 then 
+		Duel.ShuffleHand(1-tp)
+		Duel.DiscardHand(1-tp,aux.TRUE,1,1,REASON_EFFECT+REASON_RELEASE)
 	end
 end
