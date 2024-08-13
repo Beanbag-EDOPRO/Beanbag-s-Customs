@@ -54,7 +54,7 @@ function s.zonecheck(c,tp,g)
 	return Duel.GetLocationCountFromEx(tp,tp,g,c)>0 and c:IsXyzSummonable(nil,g)
 end
 function s.mfilter1(c,mc,exg,tp)
-	local g=Group.FromCards(c,mc)
+	local g=Card.FromCards(c,mc)
 	return exg:IsExists(s.zonecheck,1,nil,tp,g)
 end
 function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
