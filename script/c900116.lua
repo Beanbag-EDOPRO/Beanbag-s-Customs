@@ -4,12 +4,13 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_DESTROY)
+	e1:SetCategory(CATEGORY_ATKCHANGE+CATEGORY_DEFCHANGE+CATEGORY_DISABLE)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e1:SetCountLimit(1,id)
-    e1:SetCost(s.cost)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP)
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e1:SetHintTiming(TIMING_DAMAGE_STEP,TIMING_DAMAGE_STEP+TIMINGS_CHECK_MONSTER)
+	e1:SetCondition(s.condition)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
@@ -24,29 +25,53 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 
---TRIBUTE TO POP
+--TRIBUTE TO NEG+CHNG
 
-function s.filter(c,tp)
+function s.cfilter(c,tp)
 	return c:IsSetCard(0x385) and c:IsMonster() and c:IsReleasable() and not c:IsCode(id)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.filter,1,true,nil,nil,tp) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.filter,1,1,true,nil,nil,tp)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.cfilter,1,true,nil,nil,tp) end
+	local g=Duel.SelectReleaseGroupCost(tp,s.cfilter,1,1,true,nil,nil,tp)
 	Duel.Release(g,REASON_COST)
 end
+function s.nfilter(c)
+	return c:IsFaceup() and not (c:GetAttack()==0 and c:GetDefense()==0 and c:IsDisabled())
+end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) end
-	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_RELEASE,g,1,0,0)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.nfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.SelectTarget(tp,s.nfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.Release(tc,REASON_EFFECT)
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
+		local e0=Effect.CreateEffect(c)
+		e0:SetType(EFFECT_TYPE_SINGLE)
+		e0:SetCode(EFFECT_SET_ATTACK_FINAL)
+		e0:SetValue(0)
+		e0:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e0)
+		local e1=e0:Clone()
+		e1:SetCode(EFFECT_SET_DEFENSE_FINAL)
+		tc:RegisterEffect(e1)
+		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetCode(EFFECT_DISABLE)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e2)
+		local e3=Effect.CreateEffect(c)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetCode(EFFECT_DISABLE_EFFECT)
+		e3:SetValue(RESET_TURN_SET)
+		e3:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e3)
 	end
 end
+
 
 --BANISH TO ATTACH
 
