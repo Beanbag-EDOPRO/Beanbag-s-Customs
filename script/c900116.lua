@@ -17,9 +17,9 @@ function s.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
-	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCountLimit(1,{id,0})
+	e2:SetCost(aux.bfgcost)
 	e2:SetTarget(s.target2)
 	e2:SetOperation(s.activate2)
 	c:RegisterEffect(e2)
@@ -75,28 +75,24 @@ end
 
 --BANISH TO ATTACH
 
-function s.filter(c)
-	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:GetOverlayCount()==0
+function s.afilter(c)
+	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:IsSetCard(0x385) and c:GetOverlayCount()==0
 end
-function s.filter2(c)
-	return c:IsSetCard(0x385)
-end
-function s.target2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc) end
-	if chk==0 then return e:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.IsExistingTarget(s.filter,tp,LOCATION_MZONE,0,1,nil) 
-		and Duel.IsExistingMatchingCard(s.filter2,tp,0,LOCATION_REMOVED,0,1,1,nil) end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.afilter,tp,LOCATION_MZONE,0,1,nil)
+		and Duel.IsExistingMatchingCard(Card.IsMonster,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,2,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SelectTarget(tp,s.afilter,tp,LOCATION_MZONE,0,1,1,nil)
 end
-function s.activate2(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
+function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() and c:IsRelateToEffect(e) then
-		local g=Duel.SelectMatchingCard(tp,s.filter2,tp,0,LOCATION_REMOVED,1,1,e:GetHandler())
-		if #g>0 then
-			c:CancelToGrave()
-			g:AddCard(c)
-			Duel.Overlay(tc,g)
+	if tc:IsRelateToEffect(e) and tc:IsFaceup() and not tc:IsImmuneToEffect(e) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
+		local g=Duel.GetMatchingGroup(Card.IsMonster,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
+		if #g>=2 then
+			local og=g:Select(tp,2,2,nil)
+			Duel.Overlay(tc,og)
 		end
 	end
 end
