@@ -46,9 +46,7 @@ end
 --NEGATE SUMMON
 
 function s.chcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	return Duel.IsChainNegatable(ev) and Duel.GetTurnPlayer()~=tp
+	return Duel.GetTurnPlayer()~=tp
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
