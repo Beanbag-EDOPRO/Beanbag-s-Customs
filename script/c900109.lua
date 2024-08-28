@@ -61,7 +61,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(eg,REASON_EFFECT)
 end
 
-
 --IMMUNITY
 
 function s.immval(e,re)
