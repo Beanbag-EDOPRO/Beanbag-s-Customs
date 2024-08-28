@@ -7,19 +7,22 @@ function s.initial_effect(c)
 	Xyz.AddProcedure(c,s.xyzfilter,nil,2,nil,nil,nil,nil,false)
 	-- Must be Xyz Summoned using the correct materials
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_DISABLE_SUMMON+CATEGORY_TODECK)
+	e1:SetDescription(aux.Stringid(id,1))
+	e1:SetCategory(CATEGORY_DISABLE_SUMMON+CATEGORY_DESTROY)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetRange(LOCATION_MZONE)
 	e1:SetCode(EVENT_SUMMON)
-	e1:SetCountLimit(1,id)
-    e1:SetCost(aux.dxmcostgen(2,2,nil))
 	e1:SetCondition(s.chcon)
+	e1:SetCost(aux.dxmcostgen(2,2,nil))
 	e1:SetTarget(s.target)
-	e1:SetOperation(s.activate)
-	c:RegisterEffect(e1)
+	e1:SetOperation(s.operation)
+	c:RegisterEffect(e1,false,REGISTER_FLAG_DETACH_XMAT)
+	--Negate Special Summon
 	local e2=e1:Clone()
+	e2:SetDescription(aux.Stringid(id,2))
 	e2:SetCode(EVENT_SPSUMMON)
-	c:RegisterEffect(e2)
+	c:RegisterEffect(e2,false,REGISTER_FLAG_DETACH_XMAT)
+	aux.DoubleSnareValidity(c,LOCATION_MZONE)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -46,18 +49,16 @@ end
 --NEGATE SUMMON
 
 function s.chcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()~=tp
+	return Duel.GetTurnPlayer()~=tp and Duel.GetCurrentChain()==0
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local g=eg:Filter(Card.IsControler,nil,1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DISABLE_SUMMON,g,#g,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_DISABLE_SUMMON,eg,#eg,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,#eg,0,0)
 end
-function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	local g=eg:Filter(Card.IsControler,nil,1-tp)
-	Duel.NegateSummon(g)
-	Duel.Destroy(g,REASON_EFFECT)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	Duel.NegateSummon(eg)
+	Duel.Destroy(eg,REASON_EFFECT)
 end
 
 
