@@ -56,14 +56,14 @@ end
 function s.filter2(c)
 	return c:IsSetCard(0x385)
 end
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.target2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc) end
 	if chk==0 then return e:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.IsExistingTarget(s.filter,tp,LOCATION_MZONE,0,1,nil) 
 		and Duel.IsExistingMatchingCard(s.filter2,tp,0,LOCATION_REMOVED,0,1,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,1,nil)
 end
-function s.activate(e,tp,eg,ep,ev,re,r,rp)
+function s.activate2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and tc:IsFaceup() and c:IsRelateToEffect(e) then
