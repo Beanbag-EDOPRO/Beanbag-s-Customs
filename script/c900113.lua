@@ -23,7 +23,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetRange(LOCATION_FZONE)
-	e3:SetCountLimit(1,{id,0})
+	e3:SetCountLimit(1,{id,1})
 	e3:SetCost(s.cost)
 	e3:SetCondition(s.thcon)
 	e3:SetTarget(s.thtg)
@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetType(EFFECT_TYPE_IGNITION)
 	e4:SetRange(LOCATION_GRAVE)
-	e4:SetCountLimit(1,{id,1})
+	e4:SetCountLimit(1,{id,2})
 	e4:SetCost(s.gycost)
 	e4:SetTarget(s.gytg)
 	e4:SetOperation(s.gyop)
@@ -78,12 +78,12 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Release(g,REASON_RULE,1-tp)
 	end
 end
-function s.cfilter(c)
+function s.gyfilter(c)
 	return c:IsCode(900110) and c:IsReleasable()
 end
 function s.gycost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,nil) end
-	local g=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_MZONE,0,1,1,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.gyfilter,tp,LOCATION_MZONE,0,1,nil) end
+	local g=Duel.SelectMatchingCard(tp,s.gyfilter,tp,LOCATION_MZONE,0,1,1,nil)
 	Duel.Release(g,REASON_COST)
 end
 function s.gytg(e,tp,eg,ep,ev,re,r,rp,chk)
