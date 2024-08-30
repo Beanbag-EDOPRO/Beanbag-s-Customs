@@ -28,7 +28,7 @@ end
 
 --Banish cost
 function s.rmfilter(c,tp)
-	return c:IsSetCard(0x3D4) and c:IsSpellTrap() and c:IsAbleToRemoveAsCost()
+	return c:IsSpellTrap() and c:IsAbleToRemoveAsCost()
 end
 function s.setcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_ONFIELD,0,1,e:GetHandler(),tp) end
