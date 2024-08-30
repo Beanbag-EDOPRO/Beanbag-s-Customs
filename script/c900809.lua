@@ -53,19 +53,20 @@ function s.filter(c)
 	return c:IsSetCard(0x3D4) and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.acost(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
-    Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
-    local e1=Effect.CreateEffect(e:GetHandler())
+if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SUMMON)==0
+		and Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 end
+	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
+	e1:SetCode(EFFECT_CANNOT_SUMMON)
 	e1:SetTargetRange(1,0)
 	e1:SetTarget(s.splimit)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
 	local e2=e1:Clone()
-	e2:SetCode(EFFECT_CANNOT_SUMMON)
+	e2:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
 	Duel.RegisterEffect(e2,tp)
+	aux.RegisterClientHint(e:GetHandler(),nil,tp,1,0,aux.Stringid(id,2),nil)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
