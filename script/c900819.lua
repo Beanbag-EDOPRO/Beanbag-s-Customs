@@ -82,7 +82,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetOperation(s.eqop)
 		c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	Duel.SelectYesNo(tp,aux.Stringid(id,0))
+	local g=Duel.IsExistingMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local tc=g:GetFirst()
@@ -102,6 +103,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e2)
 	    end
     end
+end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
 end
