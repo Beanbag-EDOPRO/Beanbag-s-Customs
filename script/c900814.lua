@@ -4,7 +4,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--fusion material
-	Fusion.AddProcMixRep(c,true,true,s.matfilter,4,99)
+	Fusion.AddProcMixRep(c,true,true,s.matfilter,3,99)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -24,20 +24,21 @@ function s.initial_effect(c)
 	e2:SetOperation(s.negop)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,0))
 	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_IMMUNE_EFFECT)
-	e3:SetRange(LOCATION_ONFIELD)
-	e3:SetTargetRange(LOCATION_ONFIELD,0)
-	e3:SetTarget(s.indes)
-	e3:SetValue(s.unval)
+	e3:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetTargetRange(LOCATION_HAND,0)
+	e3:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x3D4))
 	c:RegisterEffect(e3)
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
-	e4:SetType(EFFECT_TYPE_FIELD)
-	e4:SetCode(EFFECT_TRAP_ACT_IN_HAND)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetTargetRange(LOCATION_HAND,0)
-	e4:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x3D4))
+	e4:SetCategory(CATEGORY_TODECK+CATEGORY_DRAW)
+	e4:SetType(EFFECT_TYPE_ACTIVATE)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e4:SetCode(EVENT_FREE_CHAIN)
+	e4:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION) end)
+	e4:SetTarget(s.fstg)
+	e4:SetOperation(s.fsop)
 	c:RegisterEffect(e4)
 end
 
@@ -52,19 +53,12 @@ function s.sucop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_SET_BASE_ATTACK)
-	e1:SetValue(c:GetMaterialCount()*500)
+	e1:SetValue(c:GetMaterialCount()*1000)
 	e1:SetReset(RESET_EVENT|RESETS_STANDARD_DISABLE)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetCode(EFFECT_SET_BASE_DEFENSE)
 	c:RegisterEffect(e2)
-end
-
-function s.indes(e,c)
-	return c:IsFaceup() and c:IsTrap() and c:IsType(TYPE_CONTINUOUS) and c:IsSetCard(0x3D4)
-end
-function s.unval(e,te)
-	return te:GetOwnerPlayer()~=e:GetHandlerPlayer() and te:IsActivated()
 end
 
 
@@ -99,4 +93,23 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
 		end
 	end
+end
+function s.tdfilter(c)
+	return c:IsSetCard(0x3D4) and c:IsContinuousTrap() and c:IsAbleToDeck()
+end
+function s.fstg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsPlayerCanDraw(tp)
+		and Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_HAND,0,1,e:GetHandler()) end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_HAND)
+end
+function s.fsop(e,tp,eg,ep,ev,re,r,rp)
+	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
+	Duel.Hint(HINT_SELECTMSG,p,HINTMSG_TODECK)
+	local g=Duel.SelectMatchingCard(p,s.tdfilter,p,LOCATION_HAND,0,1,63,nil)
+	if #g==0 then return end
+	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
+	Duel.ShuffleDeck(p)
+	Duel.BreakEffect()
+	Duel.Draw(p,#g,REASON_EFFECT)
 end
