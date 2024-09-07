@@ -134,3 +134,16 @@ if bc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACE
 		e1:SetValue(s.atkval)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
 		c:RegisterEffect(e1)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
