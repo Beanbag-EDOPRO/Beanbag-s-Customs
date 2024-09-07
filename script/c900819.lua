@@ -117,14 +117,14 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 		and Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,tp,0)
-	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,tp,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
 end
 
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 local bc=Duel.GetFirstTarget()
 if bc:IsRelateToEffect(e) and Duel.SpecialSummon(bc,0,tp,tp,false,false,POS_FACEUP)>0
-		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,c,tc) then
+		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,bc,tc) then
 		c:RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
     end
 end
