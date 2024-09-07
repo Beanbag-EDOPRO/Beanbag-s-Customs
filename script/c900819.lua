@@ -120,13 +120,6 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.equipop(c,e,tp,tc)
 	if not c:EquipByEffectAndLimitRegister(e,tp,tc) then return end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_ADD_SETCODE)
-	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e1:SetRange(LOCATION_ONFIELD)
-	e1:SetValue(0x3D4)
-	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_EQUIP)
 	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
