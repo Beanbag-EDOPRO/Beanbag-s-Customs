@@ -82,13 +82,10 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetOperation(s.eqop)
 		c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	local g=Duel.IsExistingMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
-	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 	local tc=g:GetFirst()
 	if tc then
-		Duel.HintSelection(g)
 		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
