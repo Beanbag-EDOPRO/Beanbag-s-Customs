@@ -99,6 +99,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e2)
+end
+end
+end
 
 function s.negfilter(c,e)
 	return c:IsMonster() and not c:IsDisabled()
@@ -149,13 +152,3 @@ local c=e:GetHandler()
 		c:RegisterEffect(e3)
 	end
 end
-
-
-
-
-
-
-
-
-
-
