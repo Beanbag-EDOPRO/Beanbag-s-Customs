@@ -98,18 +98,23 @@ function s.tdfilter(c)
 	return c:IsSetCard(0x3D4) and c:IsSpellTrap() and c:IsAbleToDeck()
 end
 function s.fstg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsPlayerCanDraw(tp)
-		and Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,1,e:GetHandler()) end
-	Duel.SetTargetPlayer(tp)
+	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
+		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED)
+	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
 function s.fsop(e,tp,eg,ep,ev,re,r,rp)
-	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	Duel.Hint(HINT_SELECTMSG,p,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(p,s.tdfilter,p,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,1,63,nil)
-	if #g==0 then return end
-	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
-	Duel.ShuffleDeck(p)
-	Duel.BreakEffect()
-	Duel.Draw(p,#g,REASON_EFFECT)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,1,3,nil)
+	if #g>0 then
+		Duel.ConfirmCards(1-tp,g)
+		Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
+		local ct=#Duel.GetOperatedGroup()
+		if ct>0 then Duel.ShuffleDeck(tp) end
+		if ct==#g then
+			Duel.BreakEffect()
+			Duel.Draw(tp,ct,REASON_EFFECT)
+		end
+	end
 end
