@@ -87,11 +87,23 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-		local dg=g:Select(tp,1,1,nil)
+		local tc=g:Select(tp,1,1,nil)
+	    if tc then
 		Duel.HintSelection(dg)
-		Duel.Negate(dg,REASON_EFFECT)
-		end
+		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_DISABLE)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(e:GetHandler())
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetCode(EFFECT_DISABLE_EFFECT)
+		e2:SetValue(RESET_TURN_SET)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e2)
 	end
+end
 
 function s.negfilter(c,e)
 	return c:IsMonster() and c:IsFaceup() and not c:IsDisabled()
