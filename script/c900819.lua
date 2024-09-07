@@ -77,11 +77,10 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetCategory(CATEGORY_EQUIP)
 		e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 		e2:SetCode(EVENT_BATTLE_DESTROYING)
-		e2:SetCondition(s.eqcon)
+		e2:SetCondition(aux.bdocon)
 		e2:SetTarget(s.eqtg)
 		e2:SetOperation(s.eqop)
 		c:RegisterEffect(e2)
-	aux.AddEREquipLimit(c,nil,aux.FilterBoolFunction(Card.IsMonster),s.equipop,e1)
 	Duel.SpecialSummonComplete()
 	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
@@ -107,31 +106,31 @@ end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
 end
-function s.eqcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local tc=c:GetBattleTarget()
-	return c:IsRelateToBattle() and c:IsFaceup() and tc:IsLocation(LOCATION_GRAVE) and tc:IsMonster() and tc:IsReason(REASON_BATTLE)
+function s.filter(c,e,tp)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local tc=e:GetHandler():GetBattleTarget()
-	Duel.SetTargetCard(tc)
-	Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,tc,1,0,0)
+	local bc=e:GetHandler():GetBattleTarget()
+	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and s.filter(chkc,e,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.GetLocationCount(tp,LOCATION_SZONE)>0
+		and Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,tp,0)
+	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,tp,0)
 end
-function s.equipop(c,e,tp,tc)
-	if not c:EquipByEffectAndLimitRegister(e,tp,tc) then return end
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_EQUIP)
-	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_OWNER_RELATE)
-	e2:SetCode(EFFECT_UPDATE_ATTACK)
-	e2:SetReset(RESET_EVENT+RESETS_STANDARD)
-	e2:SetValue(500)
-	tc:RegisterEffect(e2)
-end
+
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) then
-		s.equipop(c,e,tp,tc)
-	end
-end
+local bc=Duel.GetFirstTarget()
+	if bc:IsRelateToEffect(e) and bc:IsMonster() and bc:IsFaceup() then
+if bc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0
+		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,c,tc) then
+		c:RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
+		--The equipped monster gains ATK equal to total Link Rating of Link Monsters equipped to it x 600
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_EQUIP)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetValue(s.atkval)
+		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+		c:RegisterEffect(e1)
