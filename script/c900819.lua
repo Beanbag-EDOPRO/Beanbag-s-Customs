@@ -116,13 +116,5 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local bc=Duel.GetFirstTarget()
 	if bc:IsRelateToEffect(e) and bc:IsMonster() and bc:IsFaceup() then
 		e:GetHandler():EquipByEffectAndLimitRegister(e,tp,bc,id)
-		local e1=Effect.CreateEffect(c)
-		e1:SetDescription(aux.Stringid(id,3))
-		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_ADD_SETCODE)
-		e1:SetValue(0x3D4)
-		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
-		tc:RegisterEffect(e1)
 	end
 end
