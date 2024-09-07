@@ -59,10 +59,28 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0
-	or not Duel.IsPlayerCanSpecialSummonMonster(tp,id,0,0x21,1500,1500,4,RACE_FIEND,ATTRIBUTE_DARK) then return end
+		or not Duel.IsPlayerCanSpecialSummonMonster(tp,id,0,0x21,1500,1500,4,RACE_FIEND,ATTRIBUTE_DARK) then return end
 	c:AddMonsterAttribute(TYPE_EFFECT+TYPE_TRAP)
 	Duel.SpecialSummonStep(c,1,tp,tp,true,false,POS_FACEUP)
 	c:AddMonsterAttributeComplete()
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+		e1:SetCode(EFFECT_CANNOT_ACTIVATE)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetTargetRange(0,1)
+		e1:SetValue(1)
+		e1:SetCondition(s.actcon)
+		c:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(c)
+		e2:SetDescription(aux.Stringid(id,0))
+		e2:SetCategory(CATEGORY_EQUIP)
+		e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+		e2:SetCode(EVENT_BATTLE_DESTROYING)
+		e2:SetCondition(aux.bdocon)
+		e2:SetTarget(s.eqtg)
+		e2:SetOperation(s.eqop)
+		c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
 	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
@@ -82,7 +100,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetValue(RESET_TURN_SET)
 		e2:SetReset(RESET_EVENT|RESETS_STANDARD|RESET_PHASE|PHASE_END)
 		tc:RegisterEffect(e2)
-	end
+	    end
+    end
 end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
@@ -103,5 +122,4 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetValue(0x3D4)
 	c:RegisterEffect(e1)
 	end
-end
 end
