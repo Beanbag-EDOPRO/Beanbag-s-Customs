@@ -106,8 +106,14 @@ end
 function s.negfilter(c,e)
 	return c:IsMonster() and not c:IsDisabled()
 end
+function s.cfilter(c,tp)
+	return c:IsFaceup() and c:IsSetCard(0x3D4) and c:IsControler(tp)
+end
 function s.actcon(e)
-	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
+	local tp=e:GetHandlerPlayer()
+	local a=Duel.GetAttacker()
+	local d=Duel.GetAttackTarget()
+	return (a and s.cfilter(a,tp)) or (d and s.cfilter(d,tp))
 end
 function s.spfilter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false)
