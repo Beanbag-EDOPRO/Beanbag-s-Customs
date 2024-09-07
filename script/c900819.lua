@@ -123,7 +123,6 @@ end
 
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 local bc=Duel.GetFirstTarget()
-	if bc:IsRelateToEffect(e) and bc:IsMonster() and bc:IsFaceup() then
 if bc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0
 		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,c,tc) then
 		c:RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
@@ -134,9 +133,9 @@ if bc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACE
 		e1:SetValue(s.atkval)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
 		c:RegisterEffect(e1)
-        end
     end
 end
+
 
 
 
