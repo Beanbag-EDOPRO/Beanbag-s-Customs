@@ -83,9 +83,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetOperation(s.eqop)
 		c:RegisterEffect(e2)
 	    Duel.SpecialSummonComplete()
-	if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-	local g=Duel.SelectMatchingCard(tp,s.negfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
-	if g:GetCount()>0 then
+		if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+		local g=Duel.SelectMatchingCard(tp,s.negfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+		if g:GetCount()>0 then
 		Duel.HintSelection(g)
 		local tc=g:GetFirst()
 		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
@@ -99,8 +99,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		tc:RegisterEffect(e2)
-end
-end
+		end
+	end
 end
 
 function s.negfilter(c,e)
