@@ -106,27 +106,48 @@ end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler() or Duel.GetAttackTarget()==e:GetHandler()
 end
-function s.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function s.spfilter(c,e,tp)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP,tp)
 end
 function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local bc=e:GetHandler():GetBattleTarget()
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and s.filter(chkc,e,tp) end
+	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and s.spfilter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+		and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
+	local g=Duel.SelectTarget(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,tp,0)
+	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,tp,0)
 end
 
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
-local bc=Duel.GetFirstTarget()
-if bc:IsRelateToEffect(e) and Duel.SpecialSummon(bc,0,tp,tp,false,false,POS_FACEUP)>0
-		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,bc,tc) then
+local c=e:GetHandler()
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0
+		and c:IsRelateToEffect(e) and c:IsControler(tp) and Duel.Equip(tp,c,tc) then
 		c:RegisterFlagEffect(id,RESET_EVENT|RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
-    end
+		--The equipped monster gains ATK equal to total Link Rating of Link Monsters equipped to it x 600
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_EQUIP)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetValue(s.atkval)
+		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+		c:RegisterEffect(e1)
+		--The equipped monster inflicts piercing battle damage
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_EQUIP)
+		e2:SetCode(EFFECT_PIERCE)
+		e2:SetReset(RESET_EVENT|RESETS_STANDARD)
+		c:RegisterEffect(e2)
+		--Equip limit
+		local e3=Effect.CreateEffect(c)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e3:SetCode(EFFECT_EQUIP_LIMIT)
+		e3:SetValue(function(e,c) return c==tc end)
+		e3:SetReset(RESET_EVENT|RESETS_STANDARD)
+		c:RegisterEffect(e3)
+	end
 end
 
 
