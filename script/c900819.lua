@@ -82,9 +82,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetOperation(s.eqop)
 		c:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	local g=Duel.SelectMatchingCard(tp,Card.IsNegatableMonster,tp,0,LOCATION_MZONE,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then
 		Duel.HintSelection(g)
