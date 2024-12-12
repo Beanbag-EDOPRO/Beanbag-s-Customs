@@ -9,3 +9,7 @@ open with an lua scripter and search the line that starts with "repos": [ and in
 			"should_update": true,
 			"should_read": true
 		}
+
+DO NOT REMOVE ANY OTHER REPOS
+this will mess with EDOPRO's official repositories
+always double check for mistakes before saving and enjoy
