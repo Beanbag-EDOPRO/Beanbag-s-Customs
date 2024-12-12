@@ -1,4 +1,4 @@
-search your project ignis folder for this (e.g. /ProjectIgnis/config).
+search your project ignis folder for this (e.g. /ProjectIgnis/config/configs.JSON).
 
 open with an lua scripter and search the line that starts with "repos": [ and insert the following code directly below it:
 
