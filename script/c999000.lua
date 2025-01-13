@@ -35,7 +35,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
     local e5=Effect.CreateEffect(c)
 	e5:SetCategory(CATEGORY_POSITION)
-	e5:SetType(EFFECT_TYPE_QUICK_O)
+	e5:SetType(EFFECT_TYPE_IGNITION+EFFECT_TYPE_QUICK_O)
 	e5:SetCode(EVENT_FREE_CHAIN)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetHintTiming(TIMING_BATTLE_PHASE,TIMINGS_CHECK_MONSTER+TIMING_BATTLE_PHASE)
@@ -78,17 +78,17 @@ function s.efilter(e,te)
 	return te:IsActiveType(TYPE_SPELL+TYPE_MONSTER+TYPE_TRAP) and te:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 function s.fdfilter(c)
-	return c:IsFaceup() and c:IsCanTurnSet()
+    return c:IsFaceup() and c:IsCanTurnSet()
 end
 function s.fdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.fdfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(s.fdfilter,tp,0,LOCATION_MZONE,1,nil) end
-	local g1=Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)
-	local g2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)
-	local ct= math.abs(g1-g2)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,s.fdfilter,tp,0,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
+    if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.fdfilter(chkc) end
+    local g1=Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)
+    local g2=Duel.GetFieldGroupCount(1-tp,0,LOCATION_HAND)
+    local ct= math.abs(g1-g2)
+    if chk==0 then return ct>0 and Duel.IsExistingTarget(s.fdfilter,tp,0,LOCATION_MZONE,1,nil) end
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+    local g=Duel.SelectTarget(tp,s.fdfilter,tp,0,LOCATION_MZONE,1,ct,nil)
+    Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
 function s.fdop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
@@ -96,5 +96,3 @@ function s.fdop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)
 	end
 end
-
-local ct= math.abs(g1-g2)
