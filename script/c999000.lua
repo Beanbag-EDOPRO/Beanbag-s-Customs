@@ -48,8 +48,9 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)=0
+	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0
 end
+
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,e:GetHandler(),1,0,0)
