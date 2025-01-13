@@ -91,8 +91,8 @@ function s.fdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
 function s.fdop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
-		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(s.fdfilter,nil,e)
+	if #g>0 then
+		Duel.ChangePosition(g,POS_FACEDOWN_DEFENSE)
 	end
 end
