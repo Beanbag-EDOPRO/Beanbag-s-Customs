@@ -14,8 +14,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_DESTROY)
-	e3:SetType(EFFECT_FLAG_SINGLE_RANGE)
-	e3:SetCode(EFFECT_SELF_DESTROY)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+    e3:SetCode(EVENT_PHASE+PHASE_END)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCountLimit(1)
 	e3:SetCondition(s.descon)
@@ -48,7 +48,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(e:GetHandler():GetControler(),LOCATION_HAND,0)==0
+	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
