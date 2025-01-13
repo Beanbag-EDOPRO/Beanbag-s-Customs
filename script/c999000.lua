@@ -35,7 +35,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
     local e5=Effect.CreateEffect(c)
 	e5:SetCategory(CATEGORY_POSITION)
-	e5:SetType(EFFECT_TYPE_IGNITION+EFFECT_TYPE_QUICK_O)
+	e5:SetType(EFFECT_TYPE_QUICK_O)
 	e5:SetCode(EVENT_FREE_CHAIN)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetHintTiming(TIMING_BATTLE_PHASE,TIMINGS_CHECK_MONSTER+TIMING_BATTLE_PHASE)
@@ -83,7 +83,7 @@ end
 function s.fdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.fdfilter(chkc) end
     local g1=Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)
-    local g2=Duel.GetFieldGroupCount(1-tp,0,LOCATION_HAND)
+    local g2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)
     local ct= math.abs(g1-g2)
     if chk==0 then return ct>0 and Duel.IsExistingTarget(s.fdfilter,tp,0,LOCATION_MZONE,1,nil) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
