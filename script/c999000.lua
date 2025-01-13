@@ -17,7 +17,6 @@ local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e3:SetCode(EFFECT_SELF_DESTROY)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
 	e3:SetCondition(s.descon)
 	e3:SetTarget(s.destg)
 	e3:SetOperation(s.desop)
@@ -29,7 +28,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RITUAL)
 end
 function s.filter(c)
-	return c:IsAbleToHand() and c:IsSetCard(0x270F) and not c:IsCode(999000)
+	return c:IsAbleToHand() and c:IsSetCard(0x270F) and c:IsMonster() and not c:IsCode(999000)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil) end
@@ -48,7 +47,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 end
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0
+	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)=0
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
