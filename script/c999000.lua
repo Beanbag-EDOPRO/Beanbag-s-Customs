@@ -24,15 +24,14 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil) end
 	local c=e:GetHandler()
 	local ct=c:IsRitualSummoned() and c:GetMaterialCount() or 0
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	Duel.SelectTarget(s.filter,tp,LOCATION_GRAVE,0,1,ct,c)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
-Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_GRAVE,0,nil)
 	local ct=e:GetHandler():GetMaterialCount()
-	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_ONFIELD,0,1,nil)
-	if #g==0 or ct==0 then return false end
+	local sg=aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,1,tp,HINTMSG_ATOHAND)
+	if #sg>0 then
 		Duel.SendtoHand(sg,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,sg)
 end
