@@ -33,6 +33,15 @@ function s.initial_effect(c)
 	e4:SetValue(s.efilter)
 	e4:SetCondition(s.immcon)
 	c:RegisterEffect(e4)
+    local e5=Effect.CreateEffect(c)
+	e5:SetCategory(CATEGORY_POSITION)
+	e5:SetType(EFFECT_TYPE_QUICK_O)
+	e5:SetCode(EVENT_FREE_CHAIN)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetHintTiming(TIMING_BATTLE_PHASE,TIMINGS_CHECK_MONSTER+TIMING_BATTLE_PHASE)
+	e5:SetTarget(s.fdtg)
+	e5:SetOperation(s.fdop)
+	c:RegisterEffect(e5)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RITUAL)
@@ -68,3 +77,24 @@ end
 function s.efilter(e,te)
 	return te:IsActiveType(TYPE_SPELL+TYPE_MONSTER+TYPE_TRAP) and te:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
+function s.fdfilter(c)
+	return c:IsFaceup() and c:IsCanTurnSet()
+end
+function s.fdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.fdfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.fdfilter,tp,0,LOCATION_MZONE,1,nil) end
+	local g1=Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)
+	local g2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)
+	local ct= math.abs(g1-g2)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	local g=Duel.SelectTarget(tp,s.fdfilter,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
+end
+function s.fdop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
+		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)
+	end
+end
+
+local ct= math.abs(g1-g2)
