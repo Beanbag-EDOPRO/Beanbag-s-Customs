@@ -29,14 +29,25 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToGraveAsCost() end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
-
+function s.filter1(c)
+	return Duel.IsExistingTarget(s.filter2,0,0,LOCATION_ONFIELD,1,c)
+end
+function s.filter2(c)
+	return c:IsType(TYPE_SPELL+TYPE_TRAP)
+end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,0,1-tp,LOCATION_ONFIELD)
+	if chkc then return false end
+	if chk==0 then return Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g1=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g2=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_ONFIELD,1,1,g1:GetFirst())
+	g1:Merge(g2)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,2,0,0)
 end
 
 function s.op(e,tp,eg,ep,ev,re,r,rp)
-	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	Duel.Destroy(p,Duel.GetFieldGroupCount(p,LOCATION_HAND,0))
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	local dg=g:Filter(Card.IsRelateToEffect,nil,e)
+	Duel.Destroy(dg,REASON_EFFECT)
 end
