@@ -30,20 +30,17 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST)
 end
 function s.filter(c)
-	return c:IsFaceup() and c:IsSetCard(0x270F) and c:IsType(TYPE_RITUAL)
+	return c:IsMonster()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chkc then return chkc:IsOnField() and chkc:IsControler(1-tp) end
-	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(tp,0,LOCATION_HAND,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,ct,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,0,0)
+	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,0,tp,0)
 end
 function s.op(e,tp,eg,ep,ev,re,r,rp)
-	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	local g=tg:Filter(Card.IsRelateToEffect,nil,e)
-	if #g>0 then
-		Duel.Destroy(g,REASON_EFFECT)
-end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local rt=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)
+	local dg=Duel.SelectMatchingCard(tp,nil,tp,0,LOCATION_ONFIELD,1,ct,nil)
+		if #dg==0 then return end
+		Duel.Destroy(dg,REASON_EFFECT)
 end
