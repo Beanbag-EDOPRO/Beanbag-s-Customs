@@ -33,14 +33,12 @@ function s.filter(c)
 	return c:IsMonster()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 end
-	Duel.SetTargetPlayer(tp)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,0,tp,0)
+	if chk==0 then return true end
+	Duel.SetTargetPlayer(1-tp)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,0,1-tp,0)
 end
+
 function s.op(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local rt=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)
-	local dg=Duel.SelectMatchingCard(tp,nil,tp,0,LOCATION_ONFIELD,1,ct,nil)
-		if #dg==0 then return end
-		Duel.Destroy(dg,REASON_EFFECT)
+	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
+	Duel.Destroy(p,Duel.GetFieldGroupCount(p,LOCATION_HAND,0))
 end
