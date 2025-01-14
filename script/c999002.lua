@@ -8,6 +8,7 @@ function s.initial_effect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCondition(s.con)
 	e1:SetCost(s.cost)
@@ -30,7 +31,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 
-s.listed_series={0x35}
 function s.cfilter(c)
 	return c:IsSetCard(0x270F) and c:IsRitualMonster()
 end
