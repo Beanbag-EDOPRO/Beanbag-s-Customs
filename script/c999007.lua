@@ -66,6 +66,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e2)
 end
+end
 function s.spfilter(c,e,tp)
 	return c:IsSetCard(0x270F) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(999006)
 end
