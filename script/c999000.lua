@@ -46,6 +46,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.fdop)
 	c:RegisterEffect(e5)
 end
+s.listed_names={999001}
 function s.mat_filter(c)
 	return not c:IsCode(id)
 end
