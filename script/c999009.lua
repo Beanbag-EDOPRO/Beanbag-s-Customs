@@ -65,10 +65,12 @@ end
 function s.thfilter(c)
 	return c:IsAbleToHand() and c:IsCode(999011)
 end
-function s.thfilter2(c)
-	return c:IsAbleToHand() and (c:IsRitualMonster() or c:IsRitualSpell())
+function s.thfilter1(c)
+	return c:IsSetCard(0x270F) and c:IsMonster() and not c:IsCode(id) and c:IsAbleToHand()
 end
-
+function s.thfilter3(c)
+	return c:IsRitualSpell() and c:IsAbleToHand()
+end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)
@@ -89,9 +91,17 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	elseif #gg>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=gg:Select(tp,2,2,nil)
+		local g=gg:Select(tp,1,1,nil)
 		if #g>0 then
-			Duel.SendtoHand(g,nil,REASON_EFFECT)
+		if not (Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
+		and Duel.IsExistingMatchingCard(s.thfilter3,tp,LOCATION_DECK,0,1,nil)) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g1=Duel.SelectMatchingCard(tp,s.thfilter2,tp,LOCATION_DECK,0,1,1,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g2=Duel.SelectMatchingCard(tp,s.thfilter3,tp,LOCATION_DECK,0,1,1,nil)
+	g1:Merge(g2)
+	Duel.SendtoHand(g1,nil,REASON_EFFECT)
+	Duel.ConfirmCards(1-tp,g1)
 	end
 end
 end
