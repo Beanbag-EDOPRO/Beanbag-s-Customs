@@ -89,7 +89,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	elseif #gg>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=gg:Select(tp,1,1,nil)
+		local g=gg:Select(tp,2,2,nil)
 		if #g>0 then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 	end
