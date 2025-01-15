@@ -3,6 +3,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
+	c:AddMustBeRitualSummoned()
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -44,6 +45,9 @@ function s.initial_effect(c)
 	e5:SetTarget(s.fdtg)
 	e5:SetOperation(s.fdop)
 	c:RegisterEffect(e5)
+end
+function s.mat_filter(c)
+	return not c:IsCode(id)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_RITUAL)
