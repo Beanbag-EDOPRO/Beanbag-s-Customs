@@ -15,7 +15,8 @@ function s.initial_effect(c)
 	e2:SetOperation(s.op)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x99}
+s.listed_series={0x270F}
+s.listed_names={999000}
 function s.extrafilter(c)
 	return c:IsSetCard(0x270F) and c:HasLevel() and c:IsAbleToGrave()
 end
