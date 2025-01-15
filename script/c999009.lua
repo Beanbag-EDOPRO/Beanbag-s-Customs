@@ -68,17 +68,22 @@ end
 function s.thfilter2(c)
 	return c:IsAbleToHand() and c:IsSetCard(0x270F) and c:IsRitualMonster()
 end
+function s.thfilter3(c)
+	return c:IsAbleToHand() and c:IsRitualSpell()
+end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)
 			or (s.field() and Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,2,nil))
 	end
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,2,tp,LOCATION_DECK)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local gg=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
 	local hg=Duel.GetMatchingGroup(s.thfilter2,tp,LOCATION_DECK,0,nil)
+	local hg=Duel.GetMatchingGroup(s.thfilter3,tp,LOCATION_DECK,0,nil)
 	if (#hg>0 and s.field()) and (#gg<1 or Duel.SelectYesNo(tp,aux.Stringid(id,2))) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=hg:Select(tp,1,1,nil)
