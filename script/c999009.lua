@@ -83,14 +83,14 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=hg:Select(tp,1,1,nil)
 		if #g>0 then
-			Duel.SendtoHand(g,REASON_EFFECT)
+			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		end
 	elseif #gg>0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=gg:Select(tp,1,1,nil)
 		if #g>0 then
-			Duel.SendtoHand(g,REASON_EFFECT)
+			Duel.SendtoHand(g,nil,REASON_EFFECT)
 	end
 end
 end
