@@ -11,10 +11,12 @@ function s.ritualfil(c)
 	return c:IsSetCard(0x270F)
 end
 function s.exfilter0(c)
-	return c:IsSetCard(0x270F) and c:IsAbleToGrave()
+	return c:IsSetCard(0x270F) and c:IsLevel(1) and c:IsAbleToGrave()
 end
 function s.extrafil(e,tp,eg,ep,ev,re,r,rp,chk)
-	Duel.GetMatchingGroup(s.exfilter0,tp,LOCATION_DECK,0,nil)
+	if Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 then
+		return Duel.GetMatchingGroup(s.exfilter0,tp,LOCATION_DECK,0,nil)
+	end
 end
 function s.extraop(mg,e,tp,eg,ep,ev,re,r,rp)
 	local mat2=mg:Filter(Card.IsLocation,nil,LOCATION_DECK)
