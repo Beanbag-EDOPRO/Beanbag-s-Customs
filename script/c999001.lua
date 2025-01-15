@@ -69,4 +69,4 @@ end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
     return not c:IsSetCard(0x270F)
 end
-
+end
