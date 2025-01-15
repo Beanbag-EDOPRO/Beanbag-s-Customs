@@ -63,7 +63,7 @@ function s.field()
 		or Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,999011),0,LOCATION_ONFIELD,0,1,nil)
 end
 function s.thfilter(c,hasfield)
-	return c:IsAbleToHand() and (c:IsCode(999011) or (hasfield and c:IsType(TYPE_RITUAL) and not c:IsCode(id)))
+	return c:IsAbleToHand() and (c:IsCode(999011) or (hasfield and c:IsSetCard(0x270F) and c:IsType(TYPE_RITUAL) and not c:IsCode(id)))
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local hasfield=Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,999011),tp,LOCATION_ONFIELD,0,1,nil)
