@@ -65,7 +65,7 @@ end
 function s.thfilter(c)
 	return c:IsAbleToHand() and c:IsCode(999011)
 end
-function s.thfilter1(c)
+function s.thfilter2(c)
 	return c:IsSetCard(0x270F) and c:IsMonster() and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.thfilter3(c)
@@ -74,8 +74,8 @@ end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)
-			or (s.field() and Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,2,nil))
-	end
+			or (s.field() Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
+		and Duel.IsExistingMatchingCard(s.thfilter3,tp,LOCATION_DECK,0,1,nil)) end
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,2,tp,LOCATION_DECK)
 end
