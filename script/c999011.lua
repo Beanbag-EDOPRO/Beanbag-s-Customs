@@ -10,6 +10,15 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_HAND_LIMIT)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetRange(LOCATION_FZONE)
+	e2:SetCondition(s.hslcon)
+	e2:SetTargetRange(1,0)
+	e2:SetValue(8)
+	c:RegisterEffect(e2)
 end
 function s.spfilter(c,e,tp)
 	return c:IsSetCard(0x270F) and (c:IsFaceup() or c:IsLocation(LOCATION_DECK))
@@ -24,4 +33,11 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
 	end
+end
+function s.cfilter1(c)
+	return c:IsFaceup() and c:IsCode(999000)
+end
+function s.hslcon(e)
+	local tp=e:GetHandlerPlayer()
+	return Duel.IsExistingMatchingCard(s.cfilter1,tp,LOCATION_ONFIELD,0,1,nil)
 end
