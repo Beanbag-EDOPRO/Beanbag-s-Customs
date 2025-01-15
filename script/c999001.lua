@@ -56,6 +56,3 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(c,nil,REASON_EFFECT)
 	end
 end
-function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
-    return not c:IsSetCard(0x270F)
-end
