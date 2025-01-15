@@ -3,7 +3,7 @@
 
 local s,id=GetID()
 function s.initial_effect(c)
-	local e1=Ritual.CreateProc({handler=c,lvtype=RITPROC_GREATER,filter=s.ritualfil,extrafil=s.extrafil,extraop=s.extraop,matfilter=s.forcedgroup,location=LOCATION_HAND+LOCATION_GRAVE})
+	local e1=Ritual.CreateProc({handler=c,lvtype=RITPROC_GREATER,filter=aux.FilterBoolFunction(Card.IsSetCard,0x270F),extrafil=s.extrafil,location=LOCATION_HAND|LOCATION_GRAVE})
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
@@ -16,23 +16,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_series={0x99}
-function s.ritualfil(c)
-	return c:IsSetCard(0x270F)
-end
-function s.exfilter0(c)
-	return c:IsSetCard(0x270F) and c:IsLevel(1) and c:IsAbleToGrave()
+function s.extrafilter(c)
+	return c:IsSetCard(0x270F) and c:HasLevel() and c:IsAbleToGrave()
 end
 function s.extrafil(e,tp,eg,ep,ev,re,r,rp,chk)
-	if Duel.GetMatchingGroup(s.exfilter0,tp,LOCATION_DECK,0,nil) then return
-end
-function s.extraop(mg,e,tp,eg,ep,ev,re,r,rp)
-	local mat2=mg:Filter(Card.IsLocation,nil,LOCATION_DECK)
-	mg:Sub(mat2)
-	Duel.ReleaseRitualMaterial(mg)
-	Duel.SendtoGrave(mat2,REASON_EFFECT+REASON_MATERIAL+REASON_RITUAL)
-end
-function s.forcedgroup(c,e,tp)
-	return (c:IsSetCard(0x270F) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD)) or (c:IsSetCard(0x270F) and c:IsLocation(LOCATION_DECK))
+	return Duel.GetMatchingGroup(s.extrafilter,tp,LOCATION_DECK,0,nil)
 end
 function s.filter(c)
 	return c:IsSetCard(0x270F) and c:IsMonster() and c:IsAbleToDeck()
@@ -53,5 +41,4 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 		and tc:IsLocation(LOCATION_DECK+LOCATION_EXTRA) and c:IsRelateToEffect(e) then
 		Duel.SendtoHand(c,nil,REASON_EFFECT)
 	end
-end
 end
