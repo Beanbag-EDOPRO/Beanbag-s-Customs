@@ -62,46 +62,20 @@ function s.field()
 	return Duel.IsEnvironment(999011)
 		or Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,999011),0,LOCATION_ONFIELD,0,1,nil)
 end
-function s.thfilter(c)
-	return c:IsAbleToHand() and c:IsCode(999011)
-end
-function s.thfilter2(c)
-	return c:IsSetCard(0x270F) and c:IsMonster() and not c:IsCode(id) and c:IsAbleToHand()
-end
-function s.thfilter3(c)
-	return c:IsRitualSpell() and c:IsAbleToHand()
+function s.thfilter(c,hasfield)
+	return c:IsAbleToHand() and (c:IsCode(999011) or (hasfield and c:IsSetCard(0x270F) and c:IsRitualMonster() and c:IsRitualSpell() and not c:IsCode(id)))
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)
-			or (s.field() and Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
-		and Duel.IsExistingMatchingCard(s.thfilter3,tp,LOCATION_DECK,0,1,nil)) end
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,2,tp,LOCATION_DECK)
+	local hasfield=Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,999011),tp,LOCATION_ONFIELD,0,1,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,hasfield) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	local gg=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
-	local hg=Duel.GetMatchingGroup(s.thfilter2,tp,LOCATION_DECK,0,nil)
-	if (#hg>0 and s.field()) and (#gg<1 or Duel.SelectYesNo(tp,aux.Stringid(id,2))) then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=hg:Select(tp,1,1,nil)
-		if #g>0 then
-			Duel.SendtoHand(g,nil,REASON_EFFECT)
-			Duel.ConfirmCards(1-tp,g)
-		end
-	elseif #gg>0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=gg:Select(tp,1,1,nil)
-		if #g>0 then
-		if not (Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil)
-		and Duel.IsExistingMatchingCard(s.thfilter3,tp,LOCATION_DECK,0,1,nil)) then return end
+	local hasfield=Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,999011),tp,LOCATION_ONFIELD,0,1,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g1=Duel.SelectMatchingCard(tp,s.thfilter2,tp,LOCATION_DECK,0,1,1,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g2=Duel.SelectMatchingCard(tp,s.thfilter3,tp,LOCATION_DECK,0,1,1,nil)
-	g1:Merge(g2)
-	Duel.SendtoHand(g1,nil,REASON_EFFECT)
-	Duel.ConfirmCards(1-tp,g1)
-	end
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil,hasbox)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 end
 end
