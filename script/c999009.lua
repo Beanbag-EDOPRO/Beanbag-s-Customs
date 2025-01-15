@@ -75,7 +75,7 @@ function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 			or (s.field() and Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,2,nil))
 	end
 	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,2,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local gg=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
