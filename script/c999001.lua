@@ -14,13 +14,13 @@ function s.exfilter0(c)
 	return c:IsSetCard(0x270F) and c:IsLevel(1) and c:IsAbleToGrave()
 end
 function s.extrafil(e,tp,eg,ep,ev,re,r,rp,chk)
-		if chk==0 then return true end
-	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
 	if Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 then
 		return Duel.GetMatchingGroup(s.exfilter0,tp,LOCATION_DECK,0,nil)
 	end
 end
 function s.extraop(mg,e,tp,eg,ep,ev,re,r,rp)
+		if chk==0 then return true end
+	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
 	local mat2=mg:Filter(Card.IsLocation,nil,LOCATION_DECK)
 	mg:Sub(mat2)
 	Duel.ReleaseRitualMaterial(mg)
