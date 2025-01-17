@@ -49,10 +49,18 @@ end
 
 function s.hlsvalue(e,c)
     local tp=e:GetHandlerPlayer()
-    local handlim=6
+    local handlim=6 -- Default hand limit
     local hls={Duel.GetPlayerEffect(tp,EFFECT_HAND_LIMIT)}
     for _,eff in ipairs(hls) do
-        if eff~=e then handlim=eff:GetValue() end
+        if eff~=e then -- Exclude the current effect
+            local value=eff:GetValue()
+            if type(value)=="function" then
+                value=value(eff,e,tp,c) -- Call the function to get the value
+            end
+            if type(value)=="number" then
+                handlim=value -- Become the value
+            end
+        end
     end
-    return handlim+2
+    return handlim+2 
 end
