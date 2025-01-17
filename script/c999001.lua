@@ -3,22 +3,48 @@
 
 local s,id=GetID()
 function s.initial_effect(c)
-	--Activate
-	Ritual.AddProcGreater{handler=c,filter=s.ritualfil,matfilter=s.matfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit,stage2=s.stage2}
-	--Return to hand
-	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
+    --Activate
+    local e1=Ritual.AddProcGreater{handler=c,filter=s.ritualfil,matfilter=s.matfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit,stage2=s.stage2}
+    e1:SetCost(s.spcost)
+    Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
+    --Return to hand
+    local e2=Effect.CreateEffect(c)
+    e2:SetDescription(aux.Stringid(id,0))
     e2:SetCategory(CATEGORY_TOHAND)
     e2:SetType(EFFECT_TYPE_IGNITION)
     e2:SetRange(LOCATION_GRAVE)
-    e2:SetCountLimit(1,id)	
+    e2:SetCountLimit(1,id)
+    e2:SetCost(s.spcost)    
     e2:SetTarget(s.rthtg)
-	e2:SetOperation(s.rthop)
-	c:RegisterEffect(e2)
+    e2:SetOperation(s.rthop)
+    c:RegisterEffect(e2)
 end
 
 s.listed_series={0x270F}
 s.listed_names={999000}
+
+--Cannot Special Cost
+function s.counterfilter(c)
+    return c:IsSetCard(0x270F)
+end
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+    local c=e:GetHandler()
+    if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 end
+    local e1=Effect.CreateEffect(c)
+    e1:SetType(EFFECT_TYPE_FIELD)
+    e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
+    e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+    e1:SetReset(RESET_PHASE+PHASE_END)
+    e1:SetTargetRange(1,0)
+    e1:SetLabelObject(e)
+    e1:SetTarget(s.splimit)
+    Duel.RegisterEffect(e1,tp)
+    aux.RegisterClientHint(c,nil,tp,1,0,aux.Stringid(id,1),nil)
+end
+function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
+    return not c:IsSetCard(0x270F)
+end
+
 
 --Material Filters
 function s.ritualfil(c)
@@ -67,14 +93,14 @@ end
 
 --Force Allow Deck Materials up to your Handlimit Size
 function s.tributelimit(e,tp,g,sc)
-	-- Get the hand limit or set it to 6 by default
+    -- Get the hand limit or set it to 6 by default
     local handlim=6
     local hls=Duel.GetPlayerEffect(tp,EFFECT_HAND_LIMIT)
     if hls then
         handlim=hls:GetValue()
     end
     local deckmat=g:Filter(Card.IsLocation,nil,LOCATION_DECK)
-	return #deckmat<=handlim,#deckmat>handlim
+    return #deckmat<=handlim,#deckmat>handlim
 end
 
 --Lose LP equal to # Sent from Deck*500
@@ -103,22 +129,26 @@ end
 
 --Return to hand
 function s.rthfilter(c)
-	return c:IsSetCard(0x270F) and c:IsMonster() and c:IsAbleToDeck()
+    return c:IsSetCard(0x270F) and c:IsMonster() and c:IsAbleToDeck()
 end
+
+
 function s.rthtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	local c=e:GetHandler()
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.rthfilter(chkc) end
-	if chk==0 then return c:IsAbleToHand() and Duel.IsExistingTarget(s.rthfilter,tp,LOCATION_GRAVE,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectTarget(tp,s.rthfilter,tp,LOCATION_GRAVE,0,3,3,nil)
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,c,1,0,0)
+    local c=e:GetHandler()
+    local g=Duel.GetMatchingGroup(s.rthfilter,tp,LOCATION_GRAVE,0,c,e,tp)
+    if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.rthfilter(chkc,e,tp) end
+    if chk==0 then return Duel.IsExistingMatchingCard(s.rthfilter,tp,LOCATION_GRAVE,0,1,c,e,tp) end
+    local tg=aux.SelectUnselectGroup(g,e,tp,1,3,aux.dncheck,1,tp,HINTMSG_TODECK)
+    Duel.SetTargetCard(tg)
+    Duel.SetOperationInfo(0,CATEGORY_TODECK,tg,#tg,0,0)
+    Duel.SetOperationInfo(0,CATEGORY_TOHAND,c,1,0,0)
 end
+
 function s.rthop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	local c=e:GetHandler()
-	if tc and tc:IsRelateToEffect(e) and Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)~=0
-		and tc:IsLocation(LOCATION_DECK+LOCATION_EXTRA) and c:IsRelateToEffect(e) then
-		Duel.SendtoHand(c,nil,REASON_EFFECT)
-	end
+    local c=e:GetHandler()
+    local g=Duel.GetTargetCards(e)
+    local sg=g:Filter(Card.IsRelateToEffect,nil,e)
+    if #sg>0 and Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)~=0 and c:IsLocation(LOCATION_GRAVE) and c:IsRelateToEffect(e) then
+        Duel.SendtoHand(c,nil,REASON_EFFECT)
+    end
 end
