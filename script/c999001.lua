@@ -62,7 +62,12 @@ function s.extragroup(e,tp,eg,ep,ev,re,r,rp,chk)
     local handlim=6
     local hls=Duel.GetPlayerEffect(tp,EFFECT_HAND_LIMIT)
     if hls then
-        handlim=hls:GetValue()
+        local value=hls:GetValue()
+        if type(value)=="function" then
+            handlim=value(hls,e,tp,sc)
+        else
+            handlim=value
+        end
     end
     if handlim<=0 then return end
     local g=Duel.GetMatchingGroup(s.deckmatfilter,tp,LOCATION_DECK,0,nil)
@@ -97,20 +102,32 @@ function s.tributelimit(e,tp,g,sc)
     local handlim=6
     local hls=Duel.GetPlayerEffect(tp,EFFECT_HAND_LIMIT)
     if hls then
-        handlim=hls:GetValue()
+        local value=hls:GetValue()
+        if type(value)=="function" then
+            handlim=value(hls,e,tp,sc)
+        else
+            handlim=value
+        end
     end
+    -- Calculate deck material and compare to hand limit
     local deckmat=g:Filter(Card.IsLocation,nil,LOCATION_DECK)
     return #deckmat<=handlim,#deckmat>handlim
 end
+
 
 --Lose LP equal to # Sent from Deck*500
 function s.stage2(mg,e,tp,eg,ep,ev,re,r,rp,sc)
     -- Get the hand limit or set it to 6 by default
     local c=e:GetHandler()
-    local handlim=6
+     local handlim=6
     local hls=Duel.GetPlayerEffect(tp,EFFECT_HAND_LIMIT)
     if hls then
-        handlim=hls:GetValue()
+        local value=hls:GetValue()
+        if type(value)=="function" then
+            handlim=value(hls,e,tp,sc)
+        else
+            handlim=value
+        end
     end
     local ct=mg:FilterCount(Card.IsPreviousLocation,nil,LOCATION_DECK)
     if ct>0 then 
