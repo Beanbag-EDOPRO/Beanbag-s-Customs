@@ -28,7 +28,7 @@ end
 s.counter_place_list={0x3}
 
 function s.costfilter(c)
-	return c:IsSetCard(0x3D) or c:IsSetCard(0x20) or c:IsSetCard(0x1B1) and c:IsAbleToGraveAsCost()
+	return (c:IsSetCard(SET_SIX_SAMURAI) or (c:IsSetCard(SET_SHIEN) or (c:IsSetCard(SET_SIX_STRIKE)))) and c:IsAbleToGraveAsCost()
 end
 function s.sendcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_DECK,0,1,nil) end

@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_MZONE)
     e2:SetCountLimit(1,{id,1})
@@ -82,7 +82,7 @@ function s.nsfilter2(c)
 	return c:IsFaceup() and c:IsCode(id)
 end
 function s.nsfilter(c)
-	return c:IsSetCard(0x3D) or c:IsSetCard(0x20) and c:IsSummonable(true,nil)
+	return c:IsSetCard(0x3D) and c:IsMonster() and c:IsSummonable(true,nil)
 end
 function s.nstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.nsfilter,tp,LOCATION_HAND,0,1,nil) end
