@@ -100,3 +100,6 @@ end
 function s.mecon1(e)
 	return e:GetHandler():GetFlagEffect(id+1)~=0
 end
+function s.melimit(e,re,tp)
+	return re:IsActiveType(TYPE_MONSTER)
+end
