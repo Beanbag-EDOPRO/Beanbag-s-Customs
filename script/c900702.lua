@@ -88,7 +88,7 @@ function s.aclimit2(e,tp,eg,ep,ev,re,r,rp)
 	e:GetHandler():ResetFlagEffect(id)
 end
 function s.econ(e)
-	return e:GetHandler():GetFlagEffect(id)~=0
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO) and e:GetHandler():GetFlagEffect(id)~=0
 end
 function s.elimit(e,te,tp)
 	return te:IsHasType(EFFECT_TYPE_ACTIVATE)
@@ -98,7 +98,7 @@ function s.maclimit1(e,tp,eg,ep,ev,re,r,rp)
 	e:GetHandler():RegisterFlagEffect(id+1,RESET_EVENT+RESETS_STANDARD_DISABLE+RESET_CONTROL+RESET_PHASE+PHASE_END,0,1)
 end
 function s.mecon1(e)
-	return e:GetHandler():GetFlagEffect(id+1)~=0
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO) and e:GetHandler():GetFlagEffect(id+1)~=0
 end
 function s.melimit(e,re,tp)
 	return re:IsActiveType(TYPE_MONSTER)
