@@ -60,7 +60,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.cfilter(c)
-	return c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0x3D) and c:IsMonster() and c:IsAbleToRemoveAsCost()
+	return c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0x3D) and c:IsMonster() and c:IsAbleToRemoveAsCost() and not c:IsType(TYPE_TUNER)
 end
 function s.filter(c)
 	return c:IsSetCard(0x3D) and c:IsType(TYPE_TUNER) and c:IsSummonable(true,nil)
