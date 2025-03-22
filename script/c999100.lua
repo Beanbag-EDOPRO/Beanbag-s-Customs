@@ -70,5 +70,3 @@ end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp)
 	return c:IsLocation(LOCATION_EXTRA)
 end
-
-end
